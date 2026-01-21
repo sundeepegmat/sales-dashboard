@@ -1,0 +1,278 @@
+<!-- Slide 6.1: Conversion Trends by Intent -->
+<h2 class="page-title">Slide 6.1: Conversion Trends by Intent</h2>
+
+<div class="alert-banner" style="background: #dbeafe; border-color: #3b82f6; color: #1e40af;">
+    <span>&#128197;</span> Analysis Period: {{ start_date }} to {{ end_date }}
+</div>
+
+{% if intent_trends %}
+
+<!-- Calls Done & Low Intent Percent Chart -->
+{% if calls_low_intent and calls_low_intent|length > 0 %}
+<div class="section-title">Calls Done & Low Intent Percent Trend</div>
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-label">Total Calls Done</div>
+        <div class="metric-value">{{ calls_low_intent|map(attribute='calls_done')|sum }}</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-label">Average Low Intent %</div>
+        <div class="metric-value">{% set total_calls = calls_low_intent|map(attribute='calls_done')|sum %}{% set total_low = calls_low_intent|map(attribute='low_intent_count')|sum %}{{ ((total_low / total_calls * 100) if total_calls > 0 else 0)|round(1) }}%</div>
+    </div>
+</div>
+<div class="chart-container">
+    <div id="calls-low-intent-chart"></div>
+</div>
+{% endif %}
+
+<!-- High Intent Chart -->
+<div class="section-title">High Intent Conversion Trend</div>
+{% if intent_trends.high and intent_trends.high|length > 0 %}
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-label">Total Calls (High Intent)</div>
+        <div class="metric-value">{{ intent_trends.high|map(attribute='calls_done')|sum }}</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-label">Total Purchases</div>
+        <div class="metric-value">{{ intent_trends.high|map(attribute='purchases')|sum }}</div>
+    </div>
+    <div class="metric-card highlight">
+        <div class="metric-label">Avg Purchase Rate</div>
+        <div class="metric-value">{% set total_calls = intent_trends.high|map(attribute='calls_done')|sum %}{% set total_purchases = intent_trends.high|map(attribute='purchases')|sum %}{{ ((total_purchases / total_calls * 100) if total_calls > 0 else 0)|round(1) }}%</div>
+    </div>
+</div>
+<div class="chart-container">
+    <div id="high-intent-chart"></div>
+</div>
+{% else %}
+<div class="empty-state" style="padding: 30px;">
+    <p>No high intent data available for the selected date range.</p>
+</div>
+{% endif %}
+
+<!-- Medium Intent Chart -->
+<div class="section-title">Medium Intent Conversion Trend</div>
+{% if intent_trends.medium and intent_trends.medium|length > 0 %}
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-label">Total Calls (Medium Intent)</div>
+        <div class="metric-value">{{ intent_trends.medium|map(attribute='calls_done')|sum }}</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-label">Total Purchases</div>
+        <div class="metric-value">{{ intent_trends.medium|map(attribute='purchases')|sum }}</div>
+    </div>
+    <div class="metric-card highlight">
+        <div class="metric-label">Avg Purchase Rate</div>
+        <div class="metric-value">{% set total_calls = intent_trends.medium|map(attribute='calls_done')|sum %}{% set total_purchases = intent_trends.medium|map(attribute='purchases')|sum %}{{ ((total_purchases / total_calls * 100) if total_calls > 0 else 0)|round(1) }}%</div>
+    </div>
+</div>
+<div class="chart-container">
+    <div id="medium-intent-chart"></div>
+</div>
+{% else %}
+<div class="empty-state" style="padding: 30px;">
+    <p>No medium intent data available for the selected date range.</p>
+</div>
+{% endif %}
+
+<!-- Low Intent Chart -->
+<div class="section-title">Low Intent Conversion Trend</div>
+{% if intent_trends.low and intent_trends.low|length > 0 %}
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-label">Total Calls (Low Intent)</div>
+        <div class="metric-value">{{ intent_trends.low|map(attribute='calls_done')|sum }}</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-label">Total Purchases</div>
+        <div class="metric-value">{{ intent_trends.low|map(attribute='purchases')|sum }}</div>
+    </div>
+    <div class="metric-card highlight">
+        <div class="metric-label">Avg Purchase Rate</div>
+        <div class="metric-value">{% set total_calls = intent_trends.low|map(attribute='calls_done')|sum %}{% set total_purchases = intent_trends.low|map(attribute='purchases')|sum %}{{ ((total_purchases / total_calls * 100) if total_calls > 0 else 0)|round(1) }}%</div>
+    </div>
+</div>
+<div class="chart-container">
+    <div id="low-intent-chart"></div>
+</div>
+{% else %}
+<div class="empty-state" style="padding: 30px;">
+    <p>No low intent data available for the selected date range.</p>
+</div>
+{% endif %}
+
+<script>
+{% if calls_low_intent and calls_low_intent|length > 0 %}
+var callsLowIntentOptions = {
+    series: [
+        { name: 'Calls Done', type: 'column', data: [{% for t in calls_low_intent %}{{ t.calls_done }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+        { name: 'Low Intent %', type: 'line', data: [{% for t in calls_low_intent %}{{ t.low_intent_percent }}{% if not loop.last %}, {% endif %}{% endfor %}] }
+    ],
+    chart: { height: 400, type: 'line', toolbar: { show: false } },
+    stroke: { curve: 'smooth', width: [0, 3] },
+    colors: ['#6366f1', '#ef4444'],
+    markers: { size: [0, 6] },
+    plotOptions: {
+        bar: { columnWidth: '60%' }
+    },
+    xaxis: {
+        categories: [{% for t in calls_low_intent %}'{{ t.week }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45 }
+    },
+    yaxis: [
+        { title: { text: 'Number of Calls' } },
+        { opposite: true, title: { text: 'Low Intent %' }, min: 0, max: 100, labels: { formatter: function(val) { return val + '%'; } } }
+    ],
+    legend: { position: 'top' },
+    dataLabels: {
+        enabled: true,
+        enabledOnSeries: [1],
+        formatter: function(val, { seriesIndex }) {
+            return seriesIndex === 1 ? val + '%' : val;
+        }
+    }
+};
+new ApexCharts(document.getElementById('calls-low-intent-chart'), callsLowIntentOptions).render();
+{% endif %}
+
+{% if intent_trends.high and intent_trends.high|length > 0 %}
+var highIntentOptions = {
+    series: [
+        { name: 'Calls Done', type: 'line', data: [{% for t in intent_trends.high %}{{ t.calls_done }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+        { name: 'Purchases', type: 'line', data: [{% for t in intent_trends.high %}{{ t.purchases }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+        { name: 'Purchase Rate (%)', type: 'line', data: [{% for t in intent_trends.high %}{{ t.purchase_rate }}{% if not loop.last %}, {% endif %}{% endfor %}] }
+    ],
+    chart: { height: 400, type: 'line', toolbar: { show: false } },
+    stroke: { curve: 'smooth', width: 3 },
+    colors: ['#6366f1', '#10b981', '#f97316'],
+    markers: { size: 6 },
+    xaxis: {
+        categories: [{% for t in intent_trends.high %}'{{ t.week }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45 }
+    },
+    yaxis: [
+        { title: { text: 'Calls / Purchases' } },
+        { title: { text: 'Calls / Purchases' }, show: false },
+        { opposite: true, title: { text: 'Purchase Rate (%)' }, labels: { formatter: function(val) { return val + '%'; } } }
+    ],
+    legend: { position: 'top' },
+    dataLabels: {
+        enabled: true,
+        formatter: function(val, { seriesIndex }) {
+            return seriesIndex === 2 ? val + '%' : val;
+        }
+    }
+};
+new ApexCharts(document.getElementById('high-intent-chart'), highIntentOptions).render();
+{% endif %}
+
+{% if intent_trends.medium and intent_trends.medium|length > 0 %}
+var mediumIntentOptions = {
+    series: [
+        { name: 'Calls Done', type: 'line', data: [{% for t in intent_trends.medium %}{{ t.calls_done }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+        { name: 'Purchases', type: 'line', data: [{% for t in intent_trends.medium %}{{ t.purchases }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+        { name: 'Purchase Rate (%)', type: 'line', data: [{% for t in intent_trends.medium %}{{ t.purchase_rate }}{% if not loop.last %}, {% endif %}{% endfor %}] }
+    ],
+    chart: { height: 400, type: 'line', toolbar: { show: false } },
+    stroke: { curve: 'smooth', width: 3 },
+    colors: ['#6366f1', '#10b981', '#f97316'],
+    markers: { size: 6 },
+    xaxis: {
+        categories: [{% for t in intent_trends.medium %}'{{ t.week }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45 }
+    },
+    yaxis: [
+        { title: { text: 'Calls / Purchases' } },
+        { title: { text: 'Calls / Purchases' }, show: false },
+        { opposite: true, title: { text: 'Purchase Rate (%)' }, labels: { formatter: function(val) { return val + '%'; } } }
+    ],
+    legend: { position: 'top' },
+    dataLabels: {
+        enabled: true,
+        formatter: function(val, { seriesIndex }) {
+            return seriesIndex === 2 ? val + '%' : val;
+        }
+    }
+};
+new ApexCharts(document.getElementById('medium-intent-chart'), mediumIntentOptions).render();
+{% endif %}
+
+{% if intent_trends.low and intent_trends.low|length > 0 %}
+var lowIntentOptions = {
+    series: [
+        { name: 'Calls Done', type: 'line', data: [{% for t in intent_trends.low %}{{ t.calls_done }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+        { name: 'Purchases', type: 'line', data: [{% for t in intent_trends.low %}{{ t.purchases }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+        { name: 'Purchase Rate (%)', type: 'line', data: [{% for t in intent_trends.low %}{{ t.purchase_rate }}{% if not loop.last %}, {% endif %}{% endfor %}] }
+    ],
+    chart: { height: 400, type: 'line', toolbar: { show: false } },
+    stroke: { curve: 'smooth', width: 3 },
+    colors: ['#6366f1', '#10b981', '#f97316'],
+    markers: { size: 6 },
+    xaxis: {
+        categories: [{% for t in intent_trends.low %}'{{ t.week }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45 }
+    },
+    yaxis: [
+        { title: { text: 'Calls / Purchases' } },
+        { title: { text: 'Calls / Purchases' }, show: false },
+        { opposite: true, title: { text: 'Purchase Rate (%)' }, labels: { formatter: function(val) { return val + '%'; } } }
+    ],
+    legend: { position: 'top' },
+    dataLabels: {
+        enabled: true,
+        formatter: function(val, { seriesIndex }) {
+            return seriesIndex === 2 ? val + '%' : val;
+        }
+    }
+};
+new ApexCharts(document.getElementById('low-intent-chart'), lowIntentOptions).render();
+{% endif %}
+</script>
+
+<!-- Calculation Logic Section -->
+<div class="logic-section">
+    <button class="logic-toggle" onclick="toggleLogic(this)">
+        <span class="toggle-icon">&#9660;</span>
+        <span>How are these metrics calculated?</span>
+    </button>
+    <div class="logic-content" style="display:none;">
+        <div class="data-source">
+            <strong>Data Source:</strong> Sales_Call_Tracker-Grid view.csv (sales call data)
+        </div>
+
+        <h4>Intent Classification</h4>
+        <p>Calls are classified by <code>Purchase_Intent</code> field into three categories:</p>
+        <ul>
+            <li><strong>High Intent:</strong> Prospects with high likelihood to purchase</li>
+            <li><strong>Medium Intent:</strong> Prospects with moderate interest</li>
+            <li><strong>Low Intent:</strong> Prospects with low or no interest</li>
+        </ul>
+
+        <h4>Calls Done & Low Intent %</h4>
+        <p>Shows weekly call volume and the percentage of low-intent calls.</p>
+        <div class="formula">Low Intent % = (COUNT(Purchase_Intent = 'Low') / Total Calls Done) × 100</div>
+
+        <h4>Conversion by Intent Level</h4>
+        <p>For each intent level (High, Medium, Low):</p>
+        <div class="formula">Calls Done = COUNT(rows with that intent level)</div>
+        <div class="formula">Purchases = COUNT(Purchase_Status = 'Purchased' for that intent)</div>
+        <div class="formula">Purchase Rate = (Purchases / Calls Done) × 100</div>
+
+        <h4>Expected Conversion Rates</h4>
+        <ul>
+            <li><strong>High Intent:</strong> Expected 85-95% conversion</li>
+            <li><strong>Medium Intent:</strong> Expected 40-60% conversion</li>
+            <li><strong>Low Intent:</strong> Expected 20-40% conversion</li>
+        </ul>
+    </div>
+</div>
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">&#128202;</div>
+    <h3>No Data Available</h3>
+    <p>No conversion data available for the selected date range.</p>
+</div>
+{% endif %}

@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Dashboard - Response Rate Tracker</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #6366f1;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            margin-bottom: 4px;
+        }
+
+        .nav-item:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .nav-item.active {
+            background: #eef2ff;
+            color: #6366f1;
+        }
+
+        .nav-item-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Date Filter */
+        .date-filter {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .date-filter label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+
+        .date-filter input[type="date"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: #1e293b;
+            margin-bottom: 12px;
+            transition: border-color 0.2s ease;
+        }
+
+        .date-filter input[type="date"]:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn-apply {
+            width: 100%;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-apply:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 32px;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 0.95rem;
+            color: #64748b;
+        }
+
+        .date-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1f5f9;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 12px;
+        }
+
+        /* Alert Banner */
+        .alert-banner {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.875rem;
+            color: #92400e;
+        }
+
+        /* Tabs */
+        .tabs-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        .tab-btn {
+            padding: 16px 24px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #64748b;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: #1e293b;
+        }
+
+        .tab-btn.active {
+            color: #6366f1;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #6366f1;
+        }
+
+        .tab-content {
+            padding: 24px;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Metric Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        .metric-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .metric-card.highlight {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+        }
+
+        .metric-card.highlight .metric-label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .metric-card.highlight .metric-value {
+            color: white;
+        }
+
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        .metric-icon.blue { background: #eef2ff; color: #6366f1; }
+        .metric-icon.green { background: #ecfdf5; color: #10b981; }
+        .metric-icon.orange { background: #fff7ed; color: #f97316; }
+        .metric-icon.gray { background: #f1f5f9; color: #64748b; }
+
+        .metric-card.highlight .metric-icon {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .metric-subtitle {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        /* Two Column Layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        /* Summary Table */
+        .summary-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .summary-card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            font-weight: 600;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .summary-table th,
+        .summary-table td {
+            padding: 12px 20px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .summary-table th {
+            background: #f8fafc;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .summary-table td {
+            font-size: 0.875rem;
+            color: #1e293b;
+        }
+
+        .summary-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .summary-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        /* Chart Container */
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+        }
+
+        .chart-card-header {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 12px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">📊</div>
+            Sales Dashboard
+        </div>
+
+        <nav class="nav-section">
+            <div class="nav-section-title">Main</div>
+            <div class="nav-item">
+                <span class="nav-item-icon">📈</span>
+                Overview
+            </div>
+            <div class="nav-item">
+                <span class="nav-item-icon">👥</span>
+                Agent Attendance
+            </div>
+            <div class="nav-item active">
+                <span class="nav-item-icon">📱</span>
+                Response Rate Tracker
+            </div>
+            <div class="nav-item">
+                <span class="nav-item-icon">💼</span>
+                Agent Purchases
+            </div>
+            <div class="nav-item">
+                <span class="nav-item-icon">📊</span>
+                Bookings Trend
+            </div>
+        </nav>
+
+        <div class="date-filter">
+            <div class="nav-section-title">Date Filter</div>
+            <label for="start-date">Start Date</label>
+            <input type="date" id="start-date" value="2025-12-01">
+
+            <label for="end-date">End Date</label>
+            <input type="date" id="end-date" value="2025-12-07">
+
+            <button class="btn-apply" onclick="applyDateFilter()">Apply Filter</button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="page-header">
+            <h1 class="page-title">Response Rate Tracker</h1>
+            <p class="page-subtitle">Monitor call responses and attendance metrics</p>
+            <div class="date-badge" id="date-range-badge">
+                <span>📅</span>
+                <span id="date-range-text">Dec 1, 2025 - Dec 7, 2025</span>
+            </div>
+        </header>
+
+        <div class="alert-banner">
+            <span>⚠️</span>
+            Source 'Inbound_Direct' is excluded from all metrics on this page
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab('overview')">Response Overview</button>
+                <button class="tab-btn" onclick="switchTab('daily')">Daily Response</button>
+                <button class="tab-btn" onclick="switchTab('agent')">Agent Data</button>
+                <button class="tab-btn" onclick="switchTab('model')">Model Accuracy</button>
+                <button class="tab-btn" onclick="switchTab('blank')">Blank Response</button>
+            </div>
+
+            <!-- Response Overview Tab -->
+            <div class="tab-content active" id="tab-overview">
+                <div class="loading" id="loading-overview">
+                    <div class="spinner"></div>
+                    Loading metrics...
+                </div>
+
+                <div id="content-overview" style="display: none;">
+                    <div class="metrics-grid" id="metrics-grid">
+                        <!-- Metrics will be inserted here -->
+                    </div>
+
+                    <div class="two-col">
+                        <div class="summary-card">
+                            <div class="summary-card-header">
+                                <span>📋</span>
+                                Response Summary
+                            </div>
+                            <table class="summary-table">
+                                <thead>
+                                    <tr>
+                                        <th>Metric</th>
+                                        <th>Value</th>
+                                        <th>Definition</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="summary-table-body">
+                                    <!-- Data will be inserted here -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="chart-card-header">
+                                <span>📊</span>
+                                Response Distribution
+                            </div>
+                            <div id="pie-chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Response Tab -->
+            <div class="tab-content" id="tab-daily">
+                <div class="loading" id="loading-daily">
+                    <div class="spinner"></div>
+                    Loading daily data...
+                </div>
+
+                <div id="content-daily" style="display: none;">
+                    <div class="summary-card" style="margin-bottom: 24px;">
+                        <div class="summary-card-header">
+                            <span>📋</span>
+                            Daily Response Metrics
+                        </div>
+                        <table class="summary-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Calls Booked</th>
+                                    <th>Responded</th>
+                                    <th>Response Rate</th>
+                                    <th>Calls Done</th>
+                                    <th>Attendance Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="daily-table-body">
+                                <!-- Data will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <span>📈</span>
+                            Daily Trend Chart
+                        </div>
+                        <div id="line-chart"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other tabs placeholders -->
+            <div class="tab-content" id="tab-agent">
+                <p style="color: #64748b; padding: 40px; text-align: center;">Agent Data tab - Coming soon</p>
+            </div>
+            <div class="tab-content" id="tab-model">
+                <p style="color: #64748b; padding: 40px; text-align: center;">Model Accuracy tab - Coming soon</p>
+            </div>
+            <div class="tab-content" id="tab-blank">
+                <p style="color: #64748b; padding: 40px; text-align: center;">Blank Response tab - Coming soon</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Global data
+        let metricsData = null;
+        let dailyData = null;
+        let pieChart = null;
+        let lineChart = null;
+
+        // Tab switching
+        function switchTab(tabId) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+
+            // Load data if needed
+            if (tabId === 'daily' && !dailyData) {
+                loadDailyData();
+            }
+        }
+
+        // Format date for display
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        // Update date badge
+        function updateDateBadge() {
+            const start = document.getElementById('start-date').value;
+            const end = document.getElementById('end-date').value;
+            document.getElementById('date-range-text').textContent =
+                formatDate(start) + ' - ' + formatDate(end);
+        }
+
+        // Apply date filter
+        function applyDateFilter() {
+            updateDateBadge();
+            loadOverviewData();
+            dailyData = null; // Reset so it reloads when tab is clicked
+            if (document.getElementById('tab-daily').classList.contains('active')) {
+                loadDailyData();
+            }
+        }
+
+        // Load overview data
+        async function loadOverviewData() {
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+
+            document.getElementById('loading-overview').style.display = 'flex';
+            document.getElementById('content-overview').style.display = 'none';
+
+            try {
+                const response = await fetch(`/api/response-metrics?start_date=${startDate}&end_date=${endDate}`);
+                metricsData = await response.json();
+
+                if (metricsData.error) {
+                    document.getElementById('loading-overview').innerHTML =
+                        '<p style="color: #ef4444;">No data available for selected date range</p>';
+                    return;
+                }
+
+                renderOverviewMetrics();
+                renderSummaryTable();
+                renderPieChart();
+
+                document.getElementById('loading-overview').style.display = 'none';
+                document.getElementById('content-overview').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loading-overview').innerHTML =
+                    '<p style="color: #ef4444;">Error loading data</p>';
+            }
+        }
+
+        // Render overview metrics
+        function renderOverviewMetrics() {
+            const grid = document.getElementById('metrics-grid');
+            grid.innerHTML = `
+                <div class="metric-card">
+                    <div class="metric-icon blue">📞</div>
+                    <div class="metric-label">Calls Booked</div>
+                    <div class="metric-value">${metricsData.calls_booked}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon green">✅</div>
+                    <div class="metric-label">Responses (Yes)</div>
+                    <div class="metric-value">${metricsData.responses_yes}</div>
+                </div>
+                <div class="metric-card highlight">
+                    <div class="metric-icon">📈</div>
+                    <div class="metric-label">Response Rate</div>
+                    <div class="metric-value">${metricsData.response_rate}%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon gray">❓</div>
+                    <div class="metric-label">Blanks</div>
+                    <div class="metric-value">${metricsData.responses_blank}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon green">✔️</div>
+                    <div class="metric-label">Calls Done</div>
+                    <div class="metric-value">${metricsData.calls_done}</div>
+                </div>
+                <div class="metric-card highlight">
+                    <div class="metric-icon">📊</div>
+                    <div class="metric-label">Attendance Rate</div>
+                    <div class="metric-value">${metricsData.attendance_rate}%</div>
+                </div>
+            `;
+        }
+
+        // Render summary table
+        function renderSummaryTable() {
+            const tbody = document.getElementById('summary-table-body');
+            tbody.innerHTML = `
+                <tr>
+                    <td>📞 Calls Booked</td>
+                    <td><strong>${metricsData.calls_booked}</strong></td>
+                    <td>Total calls in date range</td>
+                </tr>
+                <tr>
+                    <td>✅ Responses (Yes)</td>
+                    <td><strong>${metricsData.responses_yes}</strong></td>
+                    <td>Done OR WhatsApp: In Touch/Confirmed</td>
+                </tr>
+                <tr>
+                    <td>❌ Responses (No)</td>
+                    <td><strong>${metricsData.responses_no}</strong></td>
+                    <td>WhatsApp: No Response</td>
+                </tr>
+                <tr>
+                    <td>❓ Blanks</td>
+                    <td><strong>${metricsData.responses_blank}</strong></td>
+                    <td>No response recorded</td>
+                </tr>
+                <tr>
+                    <td>📈 Response Rate</td>
+                    <td><strong>${metricsData.response_rate}%</strong></td>
+                    <td>Yes / Calls Booked</td>
+                </tr>
+                <tr>
+                    <td>✔️ Calls Done</td>
+                    <td><strong>${metricsData.calls_done}</strong></td>
+                    <td>Call_Status = 'Done'</td>
+                </tr>
+                <tr>
+                    <td>📊 Attendance Rate</td>
+                    <td><strong>${metricsData.attendance_rate}%</strong></td>
+                    <td>Calls Done / Calls Booked</td>
+                </tr>
+            `;
+        }
+
+        // Render pie chart
+        function renderPieChart() {
+            if (pieChart) {
+                pieChart.destroy();
+            }
+
+            const options = {
+                series: [metricsData.responses_yes, metricsData.responses_no, metricsData.responses_blank],
+                chart: {
+                    type: 'donut',
+                    height: 280
+                },
+                labels: ['Yes', 'No', 'Blank'],
+                colors: ['#10b981', '#f97316', '#94a3b8'],
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '60%',
+                            labels: {
+                                show: true,
+                                total: {
+                                    show: true,
+                                    label: 'Total',
+                                    fontSize: '14px',
+                                    fontWeight: 600,
+                                    color: '#64748b'
+                                }
+                            }
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom',
+                    fontSize: '13px',
+                    fontFamily: 'Inter, sans-serif',
+                    labels: {
+                        colors: '#64748b'
+                    }
+                },
+                dataLabels: {
+                    enabled: true,
+                    formatter: function(val, opts) {
+                        return opts.w.config.series[opts.seriesIndex];
+                    }
+                }
+            };
+
+            pieChart = new ApexCharts(document.getElementById('pie-chart'), options);
+            pieChart.render();
+        }
+
+        // Load daily data
+        async function loadDailyData() {
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+
+            document.getElementById('loading-daily').style.display = 'flex';
+            document.getElementById('content-daily').style.display = 'none';
+
+            try {
+                const response = await fetch(`/api/daily-metrics?start_date=${startDate}&end_date=${endDate}`);
+                dailyData = await response.json();
+
+                renderDailyTable();
+                renderLineChart();
+
+                document.getElementById('loading-daily').style.display = 'none';
+                document.getElementById('content-daily').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading daily data:', error);
+            }
+        }
+
+        // Render daily table
+        function renderDailyTable() {
+            const tbody = document.getElementById('daily-table-body');
+            tbody.innerHTML = dailyData.map(row => `
+                <tr>
+                    <td>${row.date}</td>
+                    <td>${row.calls_booked}</td>
+                    <td>${row.responded}</td>
+                    <td><strong>${row.response_rate}%</strong></td>
+                    <td>${row.calls_done}</td>
+                    <td><strong>${row.attendance_rate}%</strong></td>
+                </tr>
+            `).join('');
+        }
+
+        // Render line chart
+        function renderLineChart() {
+            if (lineChart) {
+                lineChart.destroy();
+            }
+
+            const options = {
+                series: [
+                    {
+                        name: 'Calls Booked',
+                        type: 'column',
+                        data: dailyData.map(d => d.calls_booked)
+                    },
+                    {
+                        name: 'Response Rate',
+                        type: 'line',
+                        data: dailyData.map(d => d.response_rate)
+                    },
+                    {
+                        name: 'Attendance Rate',
+                        type: 'line',
+                        data: dailyData.map(d => d.attendance_rate)
+                    }
+                ],
+                chart: {
+                    height: 350,
+                    type: 'line',
+                    toolbar: {
+                        show: false
+                    }
+                },
+                colors: ['#6366f1', '#10b981', '#f97316'],
+                stroke: {
+                    width: [0, 3, 3],
+                    curve: 'smooth'
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        columnWidth: '50%'
+                    }
+                },
+                fill: {
+                    opacity: [0.85, 1, 1]
+                },
+                markers: {
+                    size: [0, 5, 5]
+                },
+                labels: dailyData.map(d => d.date),
+                xaxis: {
+                    type: 'category',
+                    labels: {
+                        style: {
+                            colors: '#64748b',
+                            fontSize: '12px'
+                        }
+                    }
+                },
+                yaxis: [
+                    {
+                        title: {
+                            text: 'Calls Booked',
+                            style: { color: '#6366f1' }
+                        }
+                    },
+                    {
+                        opposite: true,
+                        title: {
+                            text: 'Rate (%)',
+                            style: { color: '#64748b' }
+                        },
+                        min: 0,
+                        max: 100
+                    }
+                ],
+                legend: {
+                    position: 'top',
+                    horizontalAlign: 'right',
+                    fontSize: '13px',
+                    fontFamily: 'Inter, sans-serif'
+                },
+                tooltip: {
+                    shared: true,
+                    intersect: false,
+                    y: {
+                        formatter: function(val, { seriesIndex }) {
+                            if (seriesIndex === 0) return val + ' calls';
+                            return val + '%';
+                        }
+                    }
+                }
+            };
+
+            lineChart = new ApexCharts(document.getElementById('line-chart'), options);
+            lineChart.render();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDateBadge();
+            loadOverviewData();
+        });
+    </script>
+</body>
+</html>

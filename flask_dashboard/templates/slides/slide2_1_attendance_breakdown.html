@@ -1,0 +1,148 @@
+<div class="page-header">
+    <h1 class="page-title">Attendance Breakdown</h1>
+    <p class="page-subtitle">Overview of call bookings, attendance, and WhatsApp response breakdown</p>
+    <div class="date-badge">
+        <span>{{ start_display }} - {{ end_display }}</span>
+    </div>
+</div>
+
+{% if breakdown %}
+<!-- Row 1: Main Metrics -->
+<h2 class="section-title">Booking & Attendance Metrics</h2>
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-icon blue">📅</div>
+        <div class="metric-label">Calls Booked</div>
+        <div class="metric-value">{{ breakdown.calls_booked }}</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-icon red">🚫</div>
+        <div class="metric-label">Calls Can't Happen</div>
+        <div class="metric-value">{{ breakdown.calls_cant_happen }}</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-icon green">✅</div>
+        <div class="metric-label">Calls Done</div>
+        <div class="metric-value">{{ breakdown.calls_done }}</div>
+    </div>
+    <div class="metric-card highlight">
+        <div class="metric-icon">📊</div>
+        <div class="metric-label">Attendance Rate</div>
+        <div class="metric-value">{{ breakdown.attendance_rate }}%</div>
+        <div class="metric-target" style="font-size: 0.7rem; color: #94a3b8;">Excludes Inbound_Direct only</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-icon orange">📵</div>
+        <div class="metric-label">No Response Rate</div>
+        <div class="metric-value">{{ breakdown.no_response_rate }}%</div>
+        <div class="metric-target">{{ breakdown.no_response_count }} out of {{ breakdown.calls_booked }} bookings</div>
+    </div>
+</div>
+
+<!-- Row 2: WhatsApp Response Breakdown for Not Done Calls -->
+<h2 class="section-title">Breakdown of Calls Not Done (by WhatsApp Response)</h2>
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-icon red">📵</div>
+        <div class="metric-label"># No Response</div>
+        <div class="metric-value">{{ breakdown.whatsapp_no_response }}</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-icon blue">💬</div>
+        <div class="metric-label"># In Touch</div>
+        <div class="metric-value">{{ breakdown.whatsapp_in_touch }}</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-icon green">✅</div>
+        <div class="metric-label"># Confirmed Attendance</div>
+        <div class="metric-value">{{ breakdown.whatsapp_confirmed }}</div>
+    </div>
+</div>
+
+<!-- Table: Not Done but In Touch -->
+<h2 class="section-title">Users: Not Done but In Touch</h2>
+<div class="card">
+    <div class="card-header">
+        <span>📋</span> Call_Status = "Not Done" & WhatsApp_Response = "In Touch"
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Not Done Reason Category</th>
+                    <th>Agent Name</th>
+                    <th>Interaction Explanation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if in_touch_records %}
+                    {% for record in in_touch_records %}
+                    <tr>
+                        <td>{{ record.not_done_reason or '-' }}</td>
+                        <td>{{ record.agent or '-' }}</td>
+                        <td>{{ record.interaction_explanation or '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3" style="text-align: center; color: #64748b; padding: 40px;">
+                            No records found matching the criteria
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Calculation Logic Section -->
+<div class="logic-section">
+    <button class="logic-toggle" onclick="toggleLogic(this)">
+        <span class="toggle-icon">&#9660;</span>
+        <span>How are these metrics calculated?</span>
+    </button>
+    <div class="logic-content" style="display:none;">
+        <div class="data-source">
+            <strong>Data Source:</strong> weekly_attendance_status-Grid view.csv (attendance data)
+        </div>
+
+        <h4>Calls Booked</h4>
+        <p>Total number of calls scheduled in the selected date range.</p>
+        <div class="formula">Calls Booked = COUNT(all attendance records)</div>
+
+        <h4>Calls Can't Happen</h4>
+        <p>Calls that cannot proceed due to specific conditions.</p>
+        <div class="formula">Can't Happen = COUNT(Call_Status = "Can't Happen" OR (Call_Status = "Not Done" AND Region = "Africa"))</div>
+
+        <h4>Calls Done</h4>
+        <p>Calls that were successfully completed.</p>
+        <div class="formula">Calls Done = COUNT(Call_Status = "Done")</div>
+
+        <h4>Attendance Rate</h4>
+        <p>Percentage of booked calls that were completed.</p>
+        <div class="formula">Attendance Rate = (Calls Done / Calls Booked) × 100</div>
+
+        <h4>No Response Rate</h4>
+        <p>Percentage of bookings where no WhatsApp response was received.</p>
+        <div class="formula">No Response Rate = (No Response Count / Calls Booked) × 100</div>
+
+        <h4>WhatsApp Response Breakdown (Not Done Calls)</h4>
+        <p>Categorizes calls that were not done by their WhatsApp response status:</p>
+        <ul>
+            <li><strong># No Response:</strong> COUNT(Call_Status = "Not Done" AND WhatsApp_Response = "No Response")</li>
+            <li><strong># In Touch:</strong> COUNT(Call_Status = "Not Done" AND WhatsApp_Response = "In Touch")</li>
+            <li><strong># Confirmed Attendance:</strong> COUNT(Call_Status = "Not Done" AND WhatsApp_Response = "Confirmed Attendance")</li>
+        </ul>
+
+        <h4>Users: Not Done but In Touch</h4>
+        <p>Lists details for calls where the user was in touch but call didn't happen.</p>
+        <div class="formula">Filter: Call_Status = "Not Done" AND WhatsApp_Response = "In Touch"</div>
+    </div>
+</div>
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">📊</div>
+    <p>No data available for the selected date range.</p>
+</div>
+{% endif %}

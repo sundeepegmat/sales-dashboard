@@ -1,0 +1,112 @@
+<!-- Slide 4: Bookings Trend -->
+<div class="page-header">
+    <h1 class="page-title">Bookings Trend Analysis</h1>
+    <p class="page-subtitle">Weekly bookings trend by cohort type</p>
+    <div class="date-badge">
+        <span>{{ start_display }} - {{ end_display }}</span>
+    </div>
+</div>
+
+{% if trend and trend|length > 0 %}
+<!-- Summary Metrics -->
+<div class="metrics-grid">
+    <div class="metric-card highlight">
+        <div class="metric-icon">&#128197;</div>
+        <div class="metric-label">Total Bookings</div>
+        <div class="metric-value">{{ trend|map(attribute='total_bookings')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-icon blue">&#128200;</div>
+        <div class="metric-label">Avg Weekly Bookings</div>
+        <div class="metric-value">{{ (trend|map(attribute='total_bookings')|sum / trend|length)|round(1) }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-icon orange">&#127919;</div>
+        <div class="metric-label">Raw Prospect Total</div>
+        <div class="metric-value">{{ trend|map(attribute='raw_prospect')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-icon green">&#11088;</div>
+        <div class="metric-label">Good Prospect Total</div>
+        <div class="metric-value">{{ trend|map(attribute='good_prospect')|sum }}</div>
+    </div>
+</div>
+
+<!-- Line Chart -->
+<div class="chart-container">
+    <div class="chart-header">Weekly Bookings Trend by Cohort</div>
+    <div id="bookings-trend-chart"></div>
+</div>
+
+<!-- Data Table -->
+<div class="card">
+    <div class="card-header">
+        <span>&#128202;</span> Detailed Bookings Data
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Week</th>
+                    <th>Total Bookings</th>
+                    <th>Raw Prospect</th>
+                    <th>Good Prospect</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in trend %}
+                <tr>
+                    <td><strong>{{ t.week }}</strong></td>
+                    <td>{{ t.total_bookings }}</td>
+                    <td>{{ t.raw_prospect }}</td>
+                    <td>{{ t.good_prospect }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+var bookingsTrendOptions = {
+    series: [
+        {
+            name: 'Total Bookings',
+            data: [{% for t in trend %}{{ t.total_bookings }}{% if not loop.last %}, {% endif %}{% endfor %}]
+        },
+        {
+            name: 'Raw Prospect',
+            data: [{% for t in trend %}{{ t.raw_prospect }}{% if not loop.last %}, {% endif %}{% endfor %}]
+        },
+        {
+            name: 'Good Prospect',
+            data: [{% for t in trend %}{{ t.good_prospect }}{% if not loop.last %}, {% endif %}{% endfor %}]
+        }
+    ],
+    chart: { type: 'line', height: 400, toolbar: { show: false } },
+    stroke: { curve: 'smooth', width: [3, 2, 2] },
+    colors: ['#6366f1', '#f97316', '#10b981'],
+    markers: { size: [6, 4, 4] },
+    xaxis: {
+        categories: [{% for t in trend %}'{{ t.week }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45 }
+    },
+    yaxis: { title: { text: 'Number of Bookings' } },
+    legend: { position: 'top' },
+    dataLabels: {
+        enabled: true,
+        enabledOnSeries: [0]
+    }
+};
+new ApexCharts(document.getElementById('bookings-trend-chart'), bookingsTrendOptions).render();
+</script>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">&#128197;</div>
+    <h3>No Data Available</h3>
+    <p>No bookings trend data found for the selected date range.</p>
+</div>
+{% endif %}

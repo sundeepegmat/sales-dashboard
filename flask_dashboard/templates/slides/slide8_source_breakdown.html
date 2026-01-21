@@ -1,0 +1,240 @@
+<!-- Slide 8: Source Breakdown Analysis -->
+<h2 class="page-title">Slide 8: Source Breakdown Analysis</h2>
+
+<div class="alert-banner" style="background: #dbeafe; border-color: #3b82f6; color: #1e40af;">
+    <span>&#128202;</span> Analysis Period: {{ start_date }} to {{ end_date }}
+</div>
+
+{% if source_metrics and source_metrics|length > 0 %}
+<!-- Source Breakdown Table -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Source Breakdown Table</h3>
+
+<div class="card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Source</th>
+                    <th>Number_of_Bookings</th>
+                    <th>Number_of_Calls_Done</th>
+                    <th>Attendance_Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in source_metrics %}
+                <tr>
+                    <td>{{ s.source }}</td>
+                    <td>{{ s.bookings }}</td>
+                    <td>{{ s.calls_done }}</td>
+                    <td>{{ s.attendance_rate }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Source-Agent Breakdown Table -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Source & Agent Breakdown Table</h3>
+<div class="alert-banner" style="background: #dbeafe; border-color: #3b82f6; color: #1e40af; margin-bottom: 16px;">
+    <span>&#128712;</span> This table shows how each agent performed within each source in terms of attendance rate
+</div>
+
+{% if source_agent_metrics and source_agent_metrics|length > 0 %}
+<div class="card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Source</th>
+                    <th>Agent</th>
+                    <th>Number_of_Bookings</th>
+                    <th>Number_of_Calls_Done</th>
+                    <th>Attendance_Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in source_agent_metrics %}
+                <tr>
+                    <td>{{ s.source }}</td>
+                    <td>{{ s.agent }}</td>
+                    <td>{{ s.bookings }}</td>
+                    <td>{{ s.calls_done }}</td>
+                    <td>{{ s.attendance_rate }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="alert-banner" style="background: #fef3c7; border-color: #f59e0b; color: #92400e;">
+    <span>&#9888;</span> No source-agent breakdown data available.
+</div>
+{% endif %}
+
+<!-- Booking Source Performance (Sales Data) -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Booking Source Performance (Sales Data)</h3>
+<div class="alert-banner" style="background: #dbeafe; border-color: #3b82f6; color: #1e40af; margin-bottom: 16px;">
+    <span>&#128712;</span> This table shows booking source performance from Sales_Call_Tracker.xlsx for the selected date range
+</div>
+
+{% if booking_source_metrics and booking_source_metrics|length > 0 %}
+<div class="card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Booking_Source</th>
+                    <th>Calls_Done</th>
+                    <th>Purchased</th>
+                    <th>Purchase_Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in booking_source_metrics %}
+                <tr>
+                    <td>{{ b.booking_source }}</td>
+                    <td>{{ b.calls_done }}</td>
+                    <td>{{ b.purchased }}</td>
+                    <td>{{ b.purchase_rate }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Booking Source Summary Metrics -->
+<div class="metrics-grid" style="margin-top: 16px;">
+    <div class="metric-card">
+        <div class="metric-label">Total Sales Calls</div>
+        <div class="metric-value">{{ booking_source_metrics|map(attribute='calls_done')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Total Purchases</div>
+        <div class="metric-value">{{ booking_source_metrics|map(attribute='purchased')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Overall Purchase Rate</div>
+        {% set total_sales_calls = booking_source_metrics|map(attribute='calls_done')|sum %}
+        {% set total_purchases = booking_source_metrics|map(attribute='purchased')|sum %}
+        <div class="metric-value">{{ ((total_purchases / total_sales_calls * 100) if total_sales_calls > 0 else 0)|round(0)|int }}%</div>
+    </div>
+</div>
+{% else %}
+<div class="alert-banner" style="background: #fef3c7; border-color: #f59e0b; color: #92400e;">
+    <span>&#9888;</span> No sales data available for booking source breakdown in the selected date range.
+</div>
+{% endif %}
+
+<!-- Bookings Leakage Data -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Bookings Leakage Data</h3>
+<div class="alert-banner" style="background: #dbeafe; border-color: #3b82f6; color: #1e40af; margin-bottom: 16px;">
+    <span>&#128712;</span> This section shows booking leakage metrics using the original unfiltered attendance data
+</div>
+
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-label">Total Calls Booked</div>
+        <div class="metric-value">{{ leakage.total_calls_booked }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Can't Happen Calls</div>
+        <div class="metric-value">{{ leakage.cant_happen_calls }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Net Bookings</div>
+        <div class="metric-value">{{ leakage.net_bookings }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Leakage Rate</div>
+        <div class="metric-value">{{ leakage.leakage_rate }}%</div>
+    </div>
+</div>
+
+<!-- Leakage Explanation -->
+<div class="card" style="margin-top: 16px;">
+    <h4 style="margin-bottom: 12px; color: #1e293b;">Leakage Calculation Logic:</h4>
+    <ul style="padding-left: 20px; color: #64748b;">
+        <li><strong>Total Calls Booked:</strong> All calls scheduled in the selected date range</li>
+        <li><strong>Can't Happen Calls:</strong> Calls that cannot proceed due to:
+            <ul style="padding-left: 20px;">
+                <li>Marked as "Not Done" AND Region is "Africa"</li>
+                <li>Marked as "Can't Happen"</li>
+            </ul>
+        </li>
+        <li><strong>Net Bookings:</strong> Total Calls Booked - Can't Happen Calls</li>
+        <li><strong>Leakage Rate:</strong> (Can't Happen Calls / Total Calls Booked) x 100</li>
+    </ul>
+</div>
+
+<!-- Summary -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Summary</h3>
+
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-label">Total Bookings</div>
+        <div class="metric-value">{{ source_metrics|map(attribute='bookings')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Total Calls Done</div>
+        <div class="metric-value">{{ source_metrics|map(attribute='calls_done')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Overall Attendance Rate</div>
+        {% set total_bookings = source_metrics|map(attribute='bookings')|sum %}
+        {% set total_calls_done = source_metrics|map(attribute='calls_done')|sum %}
+        <div class="metric-value">{{ ((total_calls_done / total_bookings * 100) if total_bookings > 0 else 0)|round(0)|int }}%</div>
+    </div>
+</div>
+
+<!-- Calculation Logic Section -->
+<div class="logic-section">
+    <button class="logic-toggle" onclick="toggleLogic(this)">
+        <span class="toggle-icon">&#9660;</span>
+        <span>How are these metrics calculated?</span>
+    </button>
+    <div class="logic-content" style="display:none;">
+        <div class="data-source">
+            <strong>Data Sources:</strong> weekly_attendance_status-Grid view.csv (attendance data), Sales_Call_Tracker-Grid view.csv (sales data)
+        </div>
+
+        <h4>Source Breakdown (Attendance Data)</h4>
+        <p>Groups bookings by <code>Source</code> field (e.g., Webinar, Landing Page, etc.).</p>
+        <div class="formula">Bookings = COUNT(rows per Source)</div>
+        <div class="formula">Calls Done = COUNT(Call_Status = 'Done' per Source)</div>
+        <div class="formula">Attendance Rate = (Calls Done / Bookings) × 100</div>
+
+        <h4>Source-Agent Breakdown</h4>
+        <p>Further breaks down each source by individual agent performance.</p>
+        <div class="formula">Agent Rate = (Agent Calls Done / Agent Bookings) × 100 per Source</div>
+
+        <h4>Booking Source Performance (Sales Data)</h4>
+        <p>Uses <code>Booking_Source</code> field from Sales data to track conversion by source.</p>
+        <div class="formula">Purchase Rate = (Purchased / Calls Done) × 100 per Booking Source</div>
+
+        <h4>Leakage Metrics</h4>
+        <p>Measures bookings that cannot be fulfilled.</p>
+        <ul>
+            <li><strong>Can't Happen:</strong> <code>Call_Status = "Can't Happen"</code> OR (<code>Call_Status = "Not Done"</code> AND <code>Region = "Africa"</code>)</li>
+        </ul>
+        <div class="formula">Net Bookings = Total Booked - Can't Happen</div>
+        <div class="formula">Leakage Rate = (Can't Happen / Total Booked) × 100</div>
+    </div>
+</div>
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">&#128202;</div>
+    <h3>No Data Available</h3>
+    <p>No data available in the attendance dataset for the selected date range.</p>
+</div>
+{% endif %}

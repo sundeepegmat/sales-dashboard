@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            padding: 24px;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #6366f1;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .nav-section { margin-bottom: 24px; }
+
+        .nav-section-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        /* Slide Dropdown Select */
+        .slide-select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e293b;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        .slide-select:hover {
+            border-color: #6366f1;
+        }
+
+        .slide-select:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+        }
+
+        .nav-item:hover { background: #f1f5f9; color: #1e293b; }
+        .nav-item.active { background: #eef2ff; color: #6366f1; }
+
+        .date-filter {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .date-filter label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+
+        .date-filter input[type="date"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+
+        .date-filter input[type="date"]:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        .btn-secondary:hover { background: #e2e8f0; color: #1e293b; }
+
+        /* Main Content - overridden below for global filter bar */
+
+        .page-header { margin-bottom: 24px; }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+            margin-top: 0;
+            padding-top: 0;
+        }
+
+        .page-subtitle { font-size: 0.95rem; color: #64748b; }
+
+        .date-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1f5f9;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 12px;
+        }
+
+        /* Flash Messages */
+        .flash-message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 0.875rem;
+        }
+
+        .flash-success { background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7; }
+        .flash-error { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Alert Banner */
+        .alert-banner {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.875rem;
+            color: #92400e;
+        }
+
+        /* Tabs */
+        .tabs-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 16px 24px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #64748b;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s ease;
+        }
+
+        .tab-btn:hover { color: #1e293b; }
+        .tab-btn.active { color: #6366f1; }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #6366f1;
+        }
+
+        .tab-content { padding: 24px; display: none; }
+        .tab-content.active { display: block; }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+
+        .metric-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .metric-card.highlight {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+        }
+
+        .metric-card.highlight .metric-label { color: rgba(255, 255, 255, 0.8); }
+        .metric-card.highlight .metric-value { color: white; }
+
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        .metric-icon.blue { background: #eef2ff; color: #6366f1; }
+        .metric-icon.green { background: #ecfdf5; color: #10b981; }
+        .metric-icon.orange { background: #fff7ed; color: #f97316; }
+        .metric-icon.red { background: #fef2f2; color: #ef4444; }
+        .metric-icon.gray { background: #f1f5f9; color: #64748b; }
+
+        .metric-card.highlight .metric-icon { background: rgba(255, 255, 255, 0.2); color: white; }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .metric-target {
+            font-size: 0.75rem;
+            margin-top: 4px;
+        }
+
+        .metric-target.success { color: #10b981; }
+        .metric-target.danger { color: #ef4444; }
+
+        /* Tables */
+        .card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            font-weight: 600;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+        }
+
+        .table-container { overflow-x: auto; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 20px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        th {
+            background: #f8fafc;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td { font-size: 0.875rem; color: #1e293b; }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #f8fafc; }
+
+        /* Charts */
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .chart-header {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Two Column Layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        /* Agent Buttons */
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .agent-btn {
+            padding: 12px 16px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .agent-btn:hover { background: #e2e8f0; color: #1e293b; }
+        .agent-btn.active { background: #6366f1; color: white; border-color: #6366f1; }
+
+        /* Status badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success { background: #ecfdf5; color: #065f46; }
+        .badge-warning { background: #fffbeb; color: #92400e; }
+        .badge-danger { background: #fef2f2; color: #991b1b; }
+
+        /* Section Title - Bigger with box highlight */
+        .section-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 32px 0 20px 0;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+            border-left: 4px solid #6366f1;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .empty-state-icon { font-size: 3rem; margin-bottom: 16px; }
+
+        /* Global Filter Bar */
+        .global-filter-bar {
+            position: fixed;
+            top: 0;
+            left: 260px;
+            right: 0;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 32px;
+            z-index: 999;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 32px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 280px;
+            padding: 16px;
+            border-radius: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .filter-group.active {
+            background: #eef2ff;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .filter-group-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .filter-group-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .filter-group.active .filter-group-title {
+            color: #6366f1;
+        }
+
+        .filter-badge {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .filter-badge.metrics {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .filter-badge.trends {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .filter-dates {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .filter-date-input {
+            flex: 1;
+        }
+
+        .filter-date-input label {
+            display: block;
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+
+        .filter-date-input input[type="date"] {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #1e293b;
+        }
+
+        .filter-date-input input[type="date"]:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .filter-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 140px;
+        }
+
+        .btn-apply {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-apply:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .filter-info {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            text-align: center;
+        }
+
+        .current-filter-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        .current-filter-indicator.metrics {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .current-filter-indicator.trends {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        /* Adjust main content for filter bar */
+        .main-content {
+            margin-left: 260px;
+            padding: 32px;
+            padding-top: 220px;
+            min-height: 100vh;
+        }
+
+        /* Calculation Logic Expandable Section */
+        .logic-section {
+            margin-top: 48px;
+            border-top: 2px solid #e2e8f0;
+            padding-top: 24px;
+        }
+
+        .logic-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #475569;
+            transition: all 0.2s ease;
+        }
+
+        .logic-toggle:hover {
+            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+            border-color: #6366f1;
+            color: #4f46e5;
+        }
+
+        .logic-toggle .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .logic-toggle.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .logic-content {
+            display: none !important;
+            margin-top: 16px;
+            padding: 24px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.875rem;
+            line-height: 1.8;
+        }
+
+        .logic-content.show {
+            display: block !important;
+        }
+
+        .logic-content h4 {
+            color: #1e293b;
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 20px 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .logic-content h4:first-child {
+            margin-top: 0;
+        }
+
+        .logic-content p {
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .logic-content code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.8rem;
+            color: #6366f1;
+        }
+
+        .logic-content ul {
+            margin: 8px 0 16px 20px;
+            color: #64748b;
+        }
+
+        .logic-content li {
+            margin-bottom: 6px;
+        }
+
+        .logic-content .formula {
+            background: #fefce8;
+            border: 1px solid #fde047;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85rem;
+            color: #854d0e;
+        }
+
+        .logic-content .data-source {
+            background: #ecfdf5;
+            border: 1px solid #6ee7b7;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            color: #065f46;
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .two-col { grid-template-columns: 1fr; }
+            .filter-container { flex-direction: column; }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; padding-top: 200px; }
+            .global-filter-bar { left: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">📊</div>
+            Sales Dashboard
+        </div>
+
+        <nav class="nav-section">
+            <div class="nav-section-title">Select Slide</div>
+            <select class="slide-select" id="slide-select" onchange="navigateToSlide(this.value)">
+                <optgroup label="Metrics (Short Range)">
+                    <option value="1" {{ 'selected' if slide == '1' else '' }}>1: Overview</option>
+                    <option value="2" {{ 'selected' if slide == '2' else '' }}>2: Agent Attendance</option>
+                    <option value="2.1" {{ 'selected' if slide == '2.1' else '' }}>2.1: Attendance Breakdown</option>
+                    <option value="2.2" {{ 'selected' if slide == '2.2' else '' }}>2.2: Response Rate Tracker</option>
+                    <option value="3" {{ 'selected' if slide == '3' else '' }}>3: Agent Purchases</option>
+                    <option value="7" {{ 'selected' if slide == '7' else '' }}>7: Phone Call Purchases</option>
+                    <option value="8" {{ 'selected' if slide == '8' else '' }}>8: Source Breakdown</option>
+                </optgroup>
+                <optgroup label="Trends (Long Range)">
+                    <option value="4" {{ 'selected' if slide == '4' else '' }}>4: Bookings Trend</option>
+                    <option value="5" {{ 'selected' if slide == '5' else '' }}>5: Attendance Trends</option>
+                    <option value="6" {{ 'selected' if slide == '6' else '' }}>6: Conversion Trends</option>
+                    <option value="6.1" {{ 'selected' if slide == '6.1' else '' }}>6.1: Conversion by Intent</option>
+                    <option value="9" {{ 'selected' if slide == '9' else '' }}>9: Monthly Sales Analysis</option>
+                </optgroup>
+                <optgroup label="Static">
+                    <option value="10" {{ 'selected' if slide == '10' else '' }}>10: Marketing Overview</option>
+                </optgroup>
+            </select>
+        </nav>
+
+        <!-- Daily Trends Section -->
+        <nav class="nav-section">
+            <div class="nav-section-title">Daily Trends (Independent Filters)</div>
+            <a href="/daily-trends/1" class="nav-item">
+                📞 Calls & Purchases
+            </a>
+            <a href="/daily-trends/2" class="nav-item">
+                📅 Attendance & Bookings
+            </a>
+        </nav>
+
+        <!-- Filter Type Indicator -->
+        <div style="margin-top: 16px; padding: 12px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <div style="font-size: 0.7rem; color: #94a3b8; margin-bottom: 6px;">CURRENT PAGE USES</div>
+            {% if filter_type == 'metrics' %}
+                <div class="current-filter-indicator metrics">
+                    📊 Metrics Filter
+                </div>
+            {% elif filter_type == 'trends' %}
+                <div class="current-filter-indicator trends">
+                    📈 Trends Filter
+                </div>
+            {% else %}
+                <div style="font-size: 0.8rem; color: #64748b;">No date filter</div>
+            {% endif %}
+        </div>
+
+        <a href="{{ url_for('refresh_data') }}" class="btn btn-secondary" style="margin-top: 16px;">
+            🔄 Refresh from Airtable
+        </a>
+
+        <button onclick="exportSnapshot()" class="btn btn-secondary" style="margin-top: 8px; background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7;">
+            📸 Export Snapshot
+        </button>
+        <div id="export-status" style="font-size: 0.7rem; color: #64748b; margin-top: 6px; text-align: center;"></div>
+    </aside>
+
+    <!-- Global Filter Bar -->
+    <div class="global-filter-bar">
+        <form method="POST" action="{{ url_for('save_filters') }}">
+            <input type="hidden" name="current_slide" value="{{ slide }}">
+            <div class="filter-container">
+                <!-- Metrics Filter -->
+                <div class="filter-group {{ 'active' if filter_type == 'metrics' else '' }}">
+                    <div class="filter-group-header">
+                        <span class="filter-group-title">📊 Metrics Filter</span>
+                        <span class="filter-badge metrics">Slides 1,2,2.1,2.2,3,7,8</span>
+                    </div>
+                    <div class="filter-dates">
+                        <div class="filter-date-input">
+                            <label>Start Date</label>
+                            <input type="date" name="metrics_start_date" value="{{ global_filters.metrics_filter.start_date }}">
+                        </div>
+                        <div class="filter-date-input">
+                            <label>End Date</label>
+                            <input type="date" name="metrics_end_date" value="{{ global_filters.metrics_filter.end_date }}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trends Filter -->
+                <div class="filter-group {{ 'active' if filter_type == 'trends' else '' }}">
+                    <div class="filter-group-header">
+                        <span class="filter-group-title">📈 Trends Filter</span>
+                        <span class="filter-badge trends">Slides 4,5,6,6.1,9</span>
+                    </div>
+                    <div class="filter-dates">
+                        <div class="filter-date-input">
+                            <label>Start Date</label>
+                            <input type="date" name="trends_start_date" value="{{ global_filters.trends_filter.start_date }}">
+                        </div>
+                        <div class="filter-date-input">
+                            <label>End Date</label>
+                            <input type="date" name="trends_end_date" value="{{ global_filters.trends_filter.end_date }}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Apply Button -->
+                <div class="filter-actions">
+                    <button type="submit" class="btn-apply">
+                        ✓ Apply Filters
+                    </button>
+                    <div class="filter-info">Filters are saved permanently</div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if slide == '1' %}
+            {% include 'slides/slide1_overview.html' %}
+        {% elif slide == '2' %}
+            {% include 'slides/slide2_agent_attendance.html' %}
+        {% elif slide == '2.1' %}
+            {% include 'slides/slide2_1_attendance_breakdown.html' %}
+        {% elif slide == '2.2' %}
+            {% include 'slides/slide2_2_response_tracker.html' %}
+        {% elif slide == '3' %}
+            {% include 'slides/slide3_agent_purchases.html' %}
+        {% elif slide == '4' %}
+            {% include 'slides/slide4_bookings_trend.html' %}
+        {% elif slide == '5' %}
+            {% include 'slides/slide5_attendance_trends.html' %}
+        {% elif slide == '6' %}
+            {% include 'slides/slide6_conversion_trends.html' %}
+        {% elif slide == '6.1' %}
+            {% include 'slides/slide6_1_conversion_by_intent.html' %}
+        {% elif slide == '7' %}
+            {% include 'slides/slide7_phone_call_purchases.html' %}
+        {% elif slide == '8' %}
+            {% include 'slides/slide8_source_breakdown.html' %}
+        {% elif slide == '9' %}
+            {% include 'slides/slide9_monthly_sales.html' %}
+        {% elif slide == '10' %}
+            {% include 'slides/slide10_marketing.html' %}
+        {% endif %}
+    </main>
+
+    <script>
+        // Slide navigation
+        function navigateToSlide(slideId) {
+            window.location.href = '/dashboard/' + slideId;
+        }
+
+        // Tab switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabId).classList.add('active');
+        }
+
+        // Agent selection
+        let selectedAgent = null;
+        function selectAgent(agent) {
+            selectedAgent = agent;
+            document.querySelectorAll('.agent-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.agent === agent);
+            });
+            document.getElementById('agent-detail').style.display = 'block';
+            renderAgentData(agent);
+        }
+
+        // Toggle Calculation Logic - using event delegation
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.logic-toggle')) {
+                const btn = e.target.closest('.logic-toggle');
+                btn.classList.toggle('active');
+                const content = btn.nextElementSibling;
+                if (content && content.classList.contains('logic-content')) {
+                    content.classList.toggle('show');
+                    // Also toggle inline style for browsers with cache issues
+                    if (content.classList.contains('show')) {
+                        content.style.display = 'block';
+                    } else {
+                        content.style.display = 'none';
+                    }
+                }
+            }
+        });
+
+        // Export Snapshot
+        function exportSnapshot() {
+            const statusEl = document.getElementById('export-status');
+            statusEl.innerHTML = '<span style="color: #6366f1;">Exporting...</span>';
+
+            fetch('/export-snapshot')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        statusEl.innerHTML = '<span style="color: #065f46;">✓ Exported at ' + new Date().toLocaleTimeString() + '</span>';
+                    } else {
+                        statusEl.innerHTML = '<span style="color: #991b1b;">✗ Error: ' + data.error + '</span>';
+                    }
+                })
+                .catch(error => {
+                    statusEl.innerHTML = '<span style="color: #991b1b;">✗ Export failed</span>';
+                });
+        }
+    </script>
+</body>
+</html>

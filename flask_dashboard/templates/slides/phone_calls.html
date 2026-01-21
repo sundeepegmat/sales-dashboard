@@ -1,0 +1,196 @@
+<!-- Slide 7: Phone Call Analysis -->
+<div class="page-header">
+    <h1 class="page-title">Phone Call Sales Performance</h1>
+    <p class="page-subtitle">Agent performance metrics for phone calls only</p>
+    <div class="date-badge">
+        <span>{{ start_display }} - {{ end_display }}</span>
+    </div>
+</div>
+
+{% if agents and agents|length > 0 %}
+<!-- Summary Metrics -->
+<div class="metrics-grid">
+    <div class="metric-card highlight">
+        <div class="metric-icon">&#128222;</div>
+        <div class="metric-label">Total Phone Calls</div>
+        <div class="metric-value">{{ agents|map(attribute='phone_calls')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-icon green">&#128176;</div>
+        <div class="metric-label">Total Purchases</div>
+        <div class="metric-value">{{ agents|map(attribute='purchases')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-icon orange">&#128200;</div>
+        <div class="metric-label">Avg Purchase Rate</div>
+        <div class="metric-value">{{ (agents|map(attribute='purchase_rate')|sum / agents|length)|round|int }}%</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-icon blue">&#128101;</div>
+        <div class="metric-label">Agents</div>
+        <div class="metric-value">{{ agents|length }}</div>
+    </div>
+</div>
+
+<!-- Agent Table -->
+<div class="card">
+    <div class="card-header">
+        <span>&#128202;</span> Agent Phone Call Performance Table
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Agent Name</th>
+                    <th>Phone Calls</th>
+                    <th>Purchases</th>
+                    <th>High Rating %</th>
+                    <th>Purchase Rate</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in agents %}
+                <tr>
+                    <td><strong>{{ a.agent }}</strong></td>
+                    <td>{{ a.phone_calls }}</td>
+                    <td>{{ a.purchases }}</td>
+                    <td>{{ a.high_rating }}%</td>
+                    <td>{{ a.purchase_rate }}%</td>
+                    <td>
+                        {% if a.purchase_rate >= 50 %}
+                        <span class="badge badge-success">On Target</span>
+                        {% elif a.purchase_rate >= 30 %}
+                        <span class="badge badge-warning">Below Target</span>
+                        {% else %}
+                        <span class="badge badge-danger">Needs Improvement</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="two-col">
+    <div class="chart-container">
+        <div class="chart-header">High Rating % by Agent</div>
+        <div id="phone-high-rating-chart"></div>
+    </div>
+
+    <div class="chart-container">
+        <div class="chart-header">Purchase Rate by Agent</div>
+        <div id="phone-purchase-chart"></div>
+    </div>
+</div>
+
+<!-- Insights -->
+<div class="card">
+    <div class="card-header">
+        <span>&#128161;</span> Performance Insights
+    </div>
+    <div style="padding: 20px;">
+        {% set high_performers = agents|selectattr('purchase_rate', 'ge', 50)|list %}
+        {% set low_performers = agents|selectattr('purchase_rate', 'lt', 50)|list %}
+
+        {% if high_performers|length > 0 %}
+        <div style="background: #ecfdf5; padding: 12px 16px; border-radius: 8px; margin-bottom: 12px; color: #065f46;">
+            <strong>&#127881; {{ high_performers|length }} agent(s) meeting/exceeding 50% phone call purchase rate target:</strong>
+            <ul style="margin: 8px 0 0 20px;">
+                {% for a in high_performers %}
+                <li>{{ a.agent }}: {{ a.purchase_rate }}% ({{ a.purchases }}/{{ a.phone_calls }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if low_performers|length > 0 %}
+        <div style="background: #fef3c7; padding: 12px 16px; border-radius: 8px; color: #92400e;">
+            <strong>&#128200; {{ low_performers|length }} agent(s) need improvement:</strong>
+            <ul style="margin: 8px 0 0 20px;">
+                {% for a in low_performers %}
+                <li>{{ a.agent }}: {{ a.purchase_rate }}% ({{ a.purchases }}/{{ a.phone_calls }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// High Rating Chart
+var phoneHighRatingOptions = {
+    series: [{
+        name: 'High Rating %',
+        data: [{% for a in agents %}{{ a.high_rating }}{% if not loop.last %}, {% endif %}{% endfor %}]
+    }],
+    chart: { type: 'bar', height: 350 },
+    plotOptions: {
+        bar: { borderRadius: 6, horizontal: false, columnWidth: '60%' }
+    },
+    colors: ['#f97316'],
+    dataLabels: {
+        enabled: true,
+        formatter: function(val) { return val + '%'; },
+        style: { fontSize: '11px' }
+    },
+    xaxis: {
+        categories: [{% for a in agents %}'{{ a.agent }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45, style: { fontSize: '11px' } }
+    },
+    yaxis: { labels: { formatter: function(val) { return val + '%'; } } },
+    annotations: {
+        yaxis: [{
+            y: 55,
+            borderColor: '#10b981',
+            strokeDashArray: 4,
+            label: { text: 'Target 55%', style: { color: '#10b981', background: '#ecfdf5' } }
+        }]
+    }
+};
+new ApexCharts(document.getElementById('phone-high-rating-chart'), phoneHighRatingOptions).render();
+
+// Purchase Rate Chart
+var phonePurchaseOptions = {
+    series: [{
+        name: 'Purchase Rate',
+        data: [{% for a in agents %}{{ a.purchase_rate }}{% if not loop.last %}, {% endif %}{% endfor %}]
+    }],
+    chart: { type: 'bar', height: 350 },
+    plotOptions: {
+        bar: { borderRadius: 6, horizontal: false, columnWidth: '60%' }
+    },
+    colors: ['#10b981'],
+    dataLabels: {
+        enabled: true,
+        formatter: function(val) { return val + '%'; },
+        style: { fontSize: '11px' }
+    },
+    xaxis: {
+        categories: [{% for a in agents %}'{{ a.agent }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45, style: { fontSize: '11px' } }
+    },
+    yaxis: { labels: { formatter: function(val) { return val + '%'; } } },
+    annotations: {
+        yaxis: [{
+            y: 60,
+            borderColor: '#6366f1',
+            strokeDashArray: 4,
+            label: { text: 'Target 60%', style: { color: '#6366f1', background: '#eef2ff' } }
+        }]
+    }
+};
+new ApexCharts(document.getElementById('phone-purchase-chart'), phonePurchaseOptions).render();
+</script>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">&#128222;</div>
+    <h3>No Data Available</h3>
+    <p>No phone call data found for the selected date range.</p>
+</div>
+{% endif %}

@@ -1,0 +1,327 @@
+<!-- Slide 10: Marketing Overview - Last 30 Days -->
+<h2 class="page-title">Slide 10: Marketing Overview - Last 30 Days</h2>
+
+<div class="alert-banner" style="background: #dbeafe; border-color: #3b82f6; color: #1e40af;">
+    <span>&#128197;</span> This slide displays static marketing metrics from Marketing.txt file
+</div>
+
+{% if marketing %}
+<!-- Revenue Section -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Last 30 Days Overall Revenue</h3>
+
+{% set revenue_current = marketing.revenue_current %}
+{% set revenue_target = marketing.revenue_target %}
+{% set revenue_red_alert = marketing.revenue_red_alert %}
+
+{% if revenue_current >= revenue_target %}
+    {% set revenue_status = "On Target" %}
+    {% set revenue_status_icon = "&#9989;" %}
+    {% set revenue_status_class = "success" %}
+{% elif revenue_current >= revenue_red_alert %}
+    {% set revenue_status = "Below Target" %}
+    {% set revenue_status_icon = "&#9888;" %}
+    {% set revenue_status_class = "warning" %}
+{% else %}
+    {% set revenue_status = "Red Alert" %}
+    {% set revenue_status_icon = "&#128680;" %}
+    {% set revenue_status_class = "danger" %}
+{% endif %}
+
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-label">Current Revenue</div>
+        <div class="metric-value">${{ revenue_current }}k</div>
+        <div class="metric-delta {{ revenue_status_class }}">{{ revenue_status_icon }} {{ revenue_status }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Target</div>
+        <div class="metric-value">${{ revenue_target }}k</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Red Alert Threshold</div>
+        <div class="metric-value">${{ revenue_red_alert }}k</div>
+    </div>
+</div>
+
+<!-- Revenue Gauge Chart -->
+<div class="chart-container" style="margin-top: 24px;">
+    <div id="revenue-gauge-chart"></div>
+</div>
+
+<!-- Customers Section -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Total New Customers - Last 30 Days</h3>
+
+{% set total_current = marketing.total_customers_current %}
+{% set total_target = marketing.total_customers_target %}
+{% set total_red_alert = marketing.total_customers_red_alert %}
+
+{% if total_current >= total_target %}
+    {% set total_status = "On Target" %}
+    {% set total_status_icon = "&#9989;" %}
+    {% set total_status_class = "success" %}
+{% elif total_current >= total_red_alert %}
+    {% set total_status = "Below Target" %}
+    {% set total_status_icon = "&#9888;" %}
+    {% set total_status_class = "warning" %}
+{% else %}
+    {% set total_status = "Red Alert" %}
+    {% set total_status_icon = "&#128680;" %}
+    {% set total_status_class = "danger" %}
+{% endif %}
+
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-label">Total New Customers</div>
+        <div class="metric-value">{{ total_current }}</div>
+        <div class="metric-delta {{ total_status_class }}">{{ total_status_icon }} {{ total_status }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Target</div>
+        <div class="metric-value">{{ total_target }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Red Alert Threshold</div>
+        <div class="metric-value">{{ total_red_alert }}</div>
+    </div>
+</div>
+
+<!-- Customer Breakdown by Source -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Customer Breakdown by Source</h3>
+
+{% set marketing_current = marketing.marketing_customers_current %}
+{% set marketing_red_alert = marketing.marketing_customers_red_alert %}
+{% set sales_current = marketing.sales_customers_current %}
+{% set sales_red_alert = marketing.sales_customers_red_alert %}
+
+{% set marketing_status = "Above Threshold" if marketing_current >= marketing_red_alert else "Red Alert" %}
+{% set marketing_status_icon = "&#9989;" if marketing_current >= marketing_red_alert else "&#128680;" %}
+{% set marketing_status_class = "success" if marketing_current >= marketing_red_alert else "danger" %}
+
+{% set sales_status = "Above Threshold" if sales_current >= sales_red_alert else "Red Alert" %}
+{% set sales_status_icon = "&#9989;" if sales_current >= sales_red_alert else "&#128680;" %}
+{% set sales_status_class = "success" if sales_current >= sales_red_alert else "danger" %}
+
+<div class="two-col">
+    <div class="card">
+        <h4 style="margin-bottom: 16px; color: #1e293b;">Marketing New Customers</h4>
+        <div class="metrics-grid" style="grid-template-columns: 1fr;">
+            <div class="metric-card">
+                <div class="metric-label">Current</div>
+                <div class="metric-value">{{ marketing_current }}</div>
+                <div class="metric-delta {{ marketing_status_class }}">{{ marketing_status_icon }} {{ marketing_status }}</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Red Alert Threshold</div>
+                <div class="metric-value">{{ marketing_red_alert }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h4 style="margin-bottom: 16px; color: #1e293b;">Sales New Customers</h4>
+        <div class="metrics-grid" style="grid-template-columns: 1fr;">
+            <div class="metric-card">
+                <div class="metric-label">Current</div>
+                <div class="metric-value">{{ sales_current }}</div>
+                <div class="metric-delta {{ sales_status_class }}">{{ sales_status_icon }} {{ sales_status }}</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Red Alert Threshold</div>
+                <div class="metric-value">{{ sales_red_alert }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Customer Source Distribution Chart -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Customer Source Distribution</h3>
+
+<div class="chart-container">
+    <div id="customer-distribution-chart"></div>
+</div>
+
+<!-- Summary Table -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Summary Table</h3>
+
+<div class="card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Current</th>
+                    <th>Target</th>
+                    <th>Red Alert</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Revenue</td>
+                    <td>${{ revenue_current }}k</td>
+                    <td>${{ revenue_target }}k</td>
+                    <td>${{ revenue_red_alert }}k</td>
+                    <td>{{ revenue_status_icon }} {{ revenue_status }}</td>
+                </tr>
+                <tr>
+                    <td>Total Customers</td>
+                    <td>{{ total_current }}</td>
+                    <td>{{ total_target }}</td>
+                    <td>{{ total_red_alert }}</td>
+                    <td>{{ total_status_icon }} {{ total_status }}</td>
+                </tr>
+                <tr>
+                    <td>Marketing Customers</td>
+                    <td>{{ marketing_current }}</td>
+                    <td>-</td>
+                    <td>{{ marketing_red_alert }}</td>
+                    <td>{{ marketing_status_icon }} {{ marketing_status }}</td>
+                </tr>
+                <tr>
+                    <td>Sales Customers</td>
+                    <td>{{ sales_current }}</td>
+                    <td>-</td>
+                    <td>{{ sales_red_alert }}</td>
+                    <td>{{ sales_status_icon }} {{ sales_status }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+// Revenue Gauge Chart
+var revenueGaugeOptions = {
+    series: [{{ ((revenue_current / (revenue_target + 20)) * 100)|round(0)|int }}],
+    chart: { height: 350, type: 'radialBar' },
+    plotOptions: {
+        radialBar: {
+            startAngle: -135,
+            endAngle: 135,
+            hollow: {
+                margin: 0,
+                size: '70%',
+                background: '#fff'
+            },
+            track: {
+                background: '#e7e7e7',
+                strokeWidth: '100%',
+                margin: 5,
+                dropShadow: { enabled: true, top: 2, left: 0, color: '#999', opacity: 0.3, blur: 2 }
+            },
+            dataLabels: {
+                name: { fontSize: '16px', color: '#1e293b', offsetY: 120 },
+                value: {
+                    offsetY: 0,
+                    fontSize: '36px',
+                    color: '#6366f1',
+                    formatter: function() { return '${{ revenue_current }}k'; }
+                }
+            }
+        }
+    },
+    fill: {
+        type: 'gradient',
+        gradient: {
+            shade: 'dark',
+            type: 'horizontal',
+            shadeIntensity: 0.5,
+            gradientToColors: ['#10b981'],
+            inverseColors: true,
+            opacityFrom: 1,
+            opacityTo: 1,
+            stops: [0, 100]
+        }
+    },
+    stroke: { lineCap: 'round' },
+    labels: ['Revenue (Target: ${{ revenue_target }}k)']
+};
+new ApexCharts(document.getElementById('revenue-gauge-chart'), revenueGaugeOptions).render();
+
+// Customer Distribution Chart
+var customerDistOptions = {
+    series: [{
+        name: 'Current Customers',
+        data: [{{ marketing_current }}, {{ sales_current }}]
+    }],
+    chart: { type: 'bar', height: 400 },
+    plotOptions: { bar: { borderRadius: 4, columnWidth: '50%' } },
+    colors: ['#f97316', '#10b981'],
+    xaxis: { categories: ['Marketing', 'Sales'] },
+    yaxis: { title: { text: 'Number of Customers' } },
+    annotations: {
+        points: [
+            { x: 'Marketing', y: {{ marketing_red_alert }}, marker: { size: 8, fillColor: '#ef4444', strokeColor: '#fff' }, label: { text: 'Red Alert: {{ marketing_red_alert }}', style: { color: '#ef4444' } } },
+            { x: 'Sales', y: {{ sales_red_alert }}, marker: { size: 8, fillColor: '#ef4444', strokeColor: '#fff' }, label: { text: 'Red Alert: {{ sales_red_alert }}', style: { color: '#ef4444' } } }
+        ]
+    },
+    dataLabels: {
+        enabled: true,
+        style: { fontSize: '14px', fontWeight: 'bold' }
+    }
+};
+new ApexCharts(document.getElementById('customer-distribution-chart'), customerDistOptions).render();
+</script>
+
+<!-- Calculation Logic Section -->
+<div class="logic-section">
+    <button class="logic-toggle" onclick="toggleLogic(this)">
+        <span class="toggle-icon">&#9660;</span>
+        <span>How are these metrics calculated?</span>
+    </button>
+    <div class="logic-content" style="display:none;">
+        <div class="data-source">
+            <strong>Data Source:</strong> Marketing.txt (static configuration file)
+        </div>
+
+        <h4>Revenue Metrics</h4>
+        <p>Overall revenue performance for the last 30 days.</p>
+        <div class="formula">Current Revenue = Value from Marketing.txt</div>
+        <div class="formula">Target = Revenue target from Marketing.txt</div>
+        <div class="formula">Red Alert = Minimum acceptable threshold from Marketing.txt</div>
+
+        <h4>Status Determination</h4>
+        <p>Status is color-coded based on performance vs thresholds:</p>
+        <ul>
+            <li><strong>Green (On Target):</strong> Current ≥ Target</li>
+            <li><strong>Yellow (Below Target):</strong> Red Alert ≤ Current < Target</li>
+            <li><strong>Red (Red Alert):</strong> Current < Red Alert</li>
+        </ul>
+
+        <h4>Total New Customers</h4>
+        <p>Total number of new customers acquired in the last 30 days.</p>
+        <div class="formula">Total = Marketing Customers + Sales Customers</div>
+
+        <h4>Customer Breakdown by Source</h4>
+        <p>New customers are split by acquisition source:</p>
+        <ul>
+            <li><strong>Marketing Customers:</strong> Acquired through marketing channels</li>
+            <li><strong>Sales Customers:</strong> Acquired through sales team</li>
+        </ul>
+        <div class="formula">Source Status = "Above Threshold" if Current ≥ Red Alert, else "Red Alert"</div>
+
+        <h4>Note</h4>
+        <p>This slide displays static metrics from Marketing.txt and is not affected by date filters.</p>
+    </div>
+</div>
+
+<style>
+.metric-delta {
+    font-size: 0.875rem;
+    margin-top: 8px;
+}
+.metric-delta.success { color: #10b981; }
+.metric-delta.warning { color: #f59e0b; }
+.metric-delta.danger { color: #ef4444; }
+</style>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">&#128202;</div>
+    <h3>No Data Available</h3>
+    <p>Unable to load marketing data. Please check Marketing.txt file.</p>
+</div>
+{% endif %}

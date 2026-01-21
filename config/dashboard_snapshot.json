@@ -1,0 +1,1912 @@
+{
+  "exported_at": "2026-01-09T07:45:12.954978",
+  "filters": {
+    "metrics": {
+      "start_date": "2025-12-29",
+      "end_date": "2026-01-04",
+      "display_range": "Dec 29, 2025 - Jan 04, 2026"
+    },
+    "trends": {
+      "start_date": "2025-10-27",
+      "end_date": "2026-01-04",
+      "display_range": "Oct 27, 2025 - Jan 04, 2026"
+    }
+  },
+  "slides": {
+    "overview": {
+      "calls_done": 66,
+      "high_call_rating": 44,
+      "outbound_attendance_rate": 55,
+      "purchase_rate": 74,
+      "purchases": 49
+    },
+    "agent_attendance": {
+      "agents": [
+        {
+          "agent": "Amruth Lal",
+          "bookings": 51,
+          "attendance_rate": 47,
+          "good_prospect_rate": 40
+        },
+        {
+          "agent": "Dhruv Joshi",
+          "bookings": 3,
+          "attendance_rate": 33,
+          "good_prospect_rate": 0
+        },
+        {
+          "agent": "Vaibhav Bothra",
+          "bookings": 17,
+          "attendance_rate": 82,
+          "good_prospect_rate": 100
+        }
+      ],
+      "team_metrics": {
+        "total_bookings": 71,
+        "total_done": 39,
+        "team_rate": 54.9,
+        "good_total": 13,
+        "good_done": 7,
+        "team_good_rate": 53.8
+      }
+    },
+    "attendance_breakdown": {
+      "breakdown": {
+        "calls_booked": 85,
+        "calls_cant_happen": 13,
+        "calls_done": 39,
+        "attendance_rate": 45.9,
+        "no_response_rate": 30.6,
+        "no_response_count": 26,
+        "whatsapp_no_response": 23,
+        "whatsapp_in_touch": 10,
+        "whatsapp_confirmed": 0
+      },
+      "in_touch_records": [
+        {
+          "email": "abhilashagupta2024@gmail.com",
+          "agent": "Amruth Lal",
+          "not_done_reason": "Non Responsive",
+          "interaction_explanation": " No response"
+        },
+        {
+          "email": "tasha.ichsani@gmail.com",
+          "agent": "Vaibhav Bothra",
+          "not_done_reason": "Non Responsive",
+          "interaction_explanation": " Responded after cancellation asking for a reschedule"
+        },
+        {
+          "email": "er.gauravmaurya@gmail.com",
+          "agent": "Amruth Lal",
+          "not_done_reason": "Requested Cancellation",
+          "interaction_explanation": " Requested last minute cancellation and said will reschedule"
+        },
+        {
+          "email": "goswami.ankita29@gmail.com",
+          "agent": "Amruth Lal",
+          "not_done_reason": "Requested Cancellation",
+          "interaction_explanation": " Important meeting came up- followup to be done next week"
+        },
+        {
+          "email": "no-email-20251230100557@nonemail.com",
+          "agent": "Amruth Lal",
+          "not_done_reason": "Requested Cancellation",
+          "interaction_explanation": " The student unavailable at the scheduled time- said will get back next week"
+        },
+        {
+          "email": "ateeqkazi2@gmail.com",
+          "agent": "Amruth Lal",
+          "not_done_reason": "Requested Cancellation",
+          "interaction_explanation": " Requested cancellation and said will rebook once avaialble- had a short call"
+        },
+        {
+          "email": "noorhundal2706@gmail.com",
+          "agent": "Amruth Lal",
+          "not_done_reason": "Requested Reschedule",
+          "interaction_explanation": " Want to connect by tuesday or wednesday next week"
+        },
+        {
+          "email": "somaniyash51@gmail.com",
+          "agent": "Amruth Lal",
+          "not_done_reason": "Requested Reschedule",
+          "interaction_explanation": " Wants to connect over the weekend"
+        },
+        {
+          "email": "anushadubey1601@gmail.com",
+          "agent": "Amruth Lal",
+          "not_done_reason": "Requested Reschedule",
+          "interaction_explanation": " Requested to connect next week, currently unavailable due to travel"
+        },
+        {
+          "email": "nathanjjacob@gmail.com",
+          "agent": "Vaibhav Bothra",
+          "not_done_reason": "Requested Reschedule",
+          "interaction_explanation": " Will schedule a call next week"
+        }
+      ]
+    },
+    "response_tracker": {
+      "metrics": {
+        "calls_booked": 85,
+        "responses_yes": 60,
+        "responses_no": 25,
+        "responses_blank": 0,
+        "response_rate": 70.6,
+        "calls_done": 39,
+        "attendance_rate": 45.9
+      },
+      "daily": [
+        {
+          "date": "2025-12-29",
+          "calls_booked": 9,
+          "responded": 7,
+          "response_rate": 77.8,
+          "calls_done": 5,
+          "attendance_rate": 55.6
+        },
+        {
+          "date": "2025-12-30",
+          "calls_booked": 14,
+          "responded": 12,
+          "response_rate": 85.7,
+          "calls_done": 5,
+          "attendance_rate": 35.7
+        },
+        {
+          "date": "2025-12-31",
+          "calls_booked": 15,
+          "responded": 11,
+          "response_rate": 73.3,
+          "calls_done": 7,
+          "attendance_rate": 46.7
+        },
+        {
+          "date": "2026-01-01",
+          "calls_booked": 5,
+          "responded": 4,
+          "response_rate": 80.0,
+          "calls_done": 4,
+          "attendance_rate": 80.0
+        },
+        {
+          "date": "2026-01-02",
+          "calls_booked": 12,
+          "responded": 6,
+          "response_rate": 50.0,
+          "calls_done": 3,
+          "attendance_rate": 25.0
+        },
+        {
+          "date": "2026-01-03",
+          "calls_booked": 15,
+          "responded": 12,
+          "response_rate": 80.0,
+          "calls_done": 11,
+          "attendance_rate": 73.3
+        },
+        {
+          "date": "2026-01-04",
+          "calls_booked": 15,
+          "responded": 8,
+          "response_rate": 53.3,
+          "calls_done": 4,
+          "attendance_rate": 26.7
+        }
+      ],
+      "agents": [
+        {
+          "agent": "Amruth Lal",
+          "calls_booked": 63,
+          "responses_yes": 42,
+          "responses_no": 21,
+          "responses_blank": 0,
+          "response_rate": 66.7,
+          "calls_done": 24,
+          "attendance_rate": 38.1
+        },
+        {
+          "agent": "Dhruv Joshi",
+          "calls_booked": 4,
+          "responses_yes": 2,
+          "responses_no": 2,
+          "responses_blank": 0,
+          "response_rate": 50.0,
+          "calls_done": 1,
+          "attendance_rate": 25.0
+        },
+        {
+          "agent": "Vaibhav Bothra",
+          "calls_booked": 18,
+          "responses_yes": 16,
+          "responses_no": 2,
+          "responses_blank": 0,
+          "response_rate": 88.9,
+          "calls_done": 14,
+          "attendance_rate": 77.8
+        }
+      ],
+      "model_accuracy": {
+        "total": 85,
+        "prob_exists": "79",
+        "prob_blank": "6",
+        "breakdown": [
+          {
+            "profile": "The Uncertain Explorer",
+            "count": 39,
+            "model_prob": 65.0,
+            "actual_rate": 76.9,
+            "difference": 11.9
+          },
+          {
+            "profile": "The Prepared Planner",
+            "count": 33,
+            "model_prob": 83.0,
+            "actual_rate": 63.6,
+            "difference": -19.4
+          },
+          {
+            "profile": "The Unprepared Rusher",
+            "count": 7,
+            "model_prob": 37.0,
+            "actual_rate": 42.9,
+            "difference": 5.9
+          }
+        ]
+      },
+      "blank_responses": []
+    },
+    "agent_sales": [
+      {
+        "agent": "Amruth",
+        "calls_done": 50,
+        "purchases": 38,
+        "high_rating": 36,
+        "purchase_rate": 76
+      },
+      {
+        "agent": "Dhruv",
+        "calls_done": 2,
+        "purchases": 2,
+        "high_rating": 50,
+        "purchase_rate": 100
+      },
+      {
+        "agent": "Vaibhav",
+        "calls_done": 14,
+        "purchases": 9,
+        "high_rating": 71,
+        "purchase_rate": 64
+      }
+    ],
+    "bookings_trend": {
+      "outbound": [
+        {
+          "week": "Week of 2025-10-27",
+          "total_bookings": 49,
+          "raw_prospect": 40,
+          "good_prospect": 9,
+          "sort_date": "2025-10-27T13:30:00"
+        },
+        {
+          "week": "Week of 2025-11-03",
+          "total_bookings": 39,
+          "raw_prospect": 30,
+          "good_prospect": 9,
+          "sort_date": "2025-11-03T14:30:00"
+        },
+        {
+          "week": "Week of 2025-11-10",
+          "total_bookings": 46,
+          "raw_prospect": 37,
+          "good_prospect": 9,
+          "sort_date": "2025-11-10T03:15:00"
+        },
+        {
+          "week": "Week of 2025-11-17",
+          "total_bookings": 67,
+          "raw_prospect": 46,
+          "good_prospect": 21,
+          "sort_date": "2025-11-17T04:30:00"
+        },
+        {
+          "week": "Week of 2025-11-24",
+          "total_bookings": 65,
+          "raw_prospect": 35,
+          "good_prospect": 30,
+          "sort_date": "2025-11-24T06:30:00"
+        },
+        {
+          "week": "Week of 2025-12-01",
+          "total_bookings": 76,
+          "raw_prospect": 49,
+          "good_prospect": 27,
+          "sort_date": "2025-12-01T06:30:00"
+        },
+        {
+          "week": "Week of 2025-12-08",
+          "total_bookings": 92,
+          "raw_prospect": 71,
+          "good_prospect": 21,
+          "sort_date": "2025-12-08T04:00:00"
+        },
+        {
+          "week": "Week of 2025-12-15",
+          "total_bookings": 70,
+          "raw_prospect": 60,
+          "good_prospect": 10,
+          "sort_date": "2025-12-15T06:30:00"
+        },
+        {
+          "week": "Week of 2025-12-22",
+          "total_bookings": 84,
+          "raw_prospect": 72,
+          "good_prospect": 12,
+          "sort_date": "2025-12-22T04:30:00"
+        },
+        {
+          "week": "Week of 2025-12-29",
+          "total_bookings": 71,
+          "raw_prospect": 58,
+          "good_prospect": 13,
+          "sort_date": "2025-12-29T06:30:00"
+        }
+      ],
+      "inbound": [
+        {
+          "week": "Week of 2025-10-27",
+          "total_bookings": 7,
+          "sort_date": "2025-10-27T03:30:00"
+        },
+        {
+          "week": "Week of 2025-11-03",
+          "total_bookings": 10,
+          "sort_date": "2025-11-03T06:30:00"
+        },
+        {
+          "week": "Week of 2025-11-10",
+          "total_bookings": 6,
+          "sort_date": "2025-11-10T06:10:00"
+        },
+        {
+          "week": "Week of 2025-11-17",
+          "total_bookings": 10,
+          "sort_date": "2025-11-17T06:30:00"
+        },
+        {
+          "week": "Week of 2025-11-24",
+          "total_bookings": 16,
+          "sort_date": "2025-11-24T15:30:00"
+        },
+        {
+          "week": "Week of 2025-12-01",
+          "total_bookings": 6,
+          "sort_date": "2025-12-01T12:30:00"
+        },
+        {
+          "week": "Week of 2025-12-08",
+          "total_bookings": 16,
+          "sort_date": "2025-12-08T04:00:00"
+        },
+        {
+          "week": "Week of 2025-12-15",
+          "total_bookings": 12,
+          "sort_date": "2025-12-15T14:30:00"
+        },
+        {
+          "week": "Week of 2025-12-22",
+          "total_bookings": 10,
+          "sort_date": "2025-12-22T06:00:00"
+        },
+        {
+          "week": "Week of 2025-12-29",
+          "total_bookings": 21,
+          "sort_date": "2025-12-29T02:30:00"
+        }
+      ]
+    },
+    "attendance_trend": {
+      "attendance": [
+        {
+          "week": "Week of 2025-10-27",
+          "overall_rate": 63,
+          "raw_rate": 60,
+          "good_rate": 78,
+          "sort_date": "2025-10-27T13:30:00"
+        },
+        {
+          "week": "Week of 2025-11-03",
+          "overall_rate": 69,
+          "raw_rate": 70,
+          "good_rate": 67,
+          "sort_date": "2025-11-03T14:30:00"
+        },
+        {
+          "week": "Week of 2025-11-10",
+          "overall_rate": 74,
+          "raw_rate": 73,
+          "good_rate": 78,
+          "sort_date": "2025-11-10T03:15:00"
+        },
+        {
+          "week": "Week of 2025-11-17",
+          "overall_rate": 52,
+          "raw_rate": 46,
+          "good_rate": 67,
+          "sort_date": "2025-11-17T04:30:00"
+        },
+        {
+          "week": "Week of 2025-11-24",
+          "overall_rate": 57,
+          "raw_rate": 60,
+          "good_rate": 53,
+          "sort_date": "2025-11-24T06:30:00"
+        },
+        {
+          "week": "Week of 2025-12-01",
+          "overall_rate": 54,
+          "raw_rate": 55,
+          "good_rate": 52,
+          "sort_date": "2025-12-01T06:30:00"
+        },
+        {
+          "week": "Week of 2025-12-08",
+          "overall_rate": 54,
+          "raw_rate": 49,
+          "good_rate": 71,
+          "sort_date": "2025-12-08T04:00:00"
+        },
+        {
+          "week": "Week of 2025-12-15",
+          "overall_rate": 61,
+          "raw_rate": 62,
+          "good_rate": 60,
+          "sort_date": "2025-12-15T06:30:00"
+        },
+        {
+          "week": "Week of 2025-12-22",
+          "overall_rate": 63,
+          "raw_rate": 62,
+          "good_rate": 67,
+          "sort_date": "2025-12-22T04:30:00"
+        },
+        {
+          "week": "Week of 2025-12-29",
+          "overall_rate": 55,
+          "raw_rate": 55,
+          "good_rate": 54,
+          "sort_date": "2025-12-29T06:30:00"
+        }
+      ],
+      "response_rate": [
+        {
+          "week": "Week of 2025-10-27",
+          "total": 49,
+          "responded": 32,
+          "response_rate": 65,
+          "sort_date": "2025-10-27T13:30:00"
+        },
+        {
+          "week": "Week of 2025-11-03",
+          "total": 39,
+          "responded": 28,
+          "response_rate": 72,
+          "sort_date": "2025-11-03T14:30:00"
+        },
+        {
+          "week": "Week of 2025-11-10",
+          "total": 46,
+          "responded": 38,
+          "response_rate": 83,
+          "sort_date": "2025-11-10T03:15:00"
+        },
+        {
+          "week": "Week of 2025-11-17",
+          "total": 67,
+          "responded": 35,
+          "response_rate": 52,
+          "sort_date": "2025-11-17T04:30:00"
+        },
+        {
+          "week": "Week of 2025-11-24",
+          "total": 65,
+          "responded": 40,
+          "response_rate": 62,
+          "sort_date": "2025-11-24T06:30:00"
+        },
+        {
+          "week": "Week of 2025-12-01",
+          "total": 76,
+          "responded": 54,
+          "response_rate": 71,
+          "sort_date": "2025-12-01T06:30:00"
+        },
+        {
+          "week": "Week of 2025-12-08",
+          "total": 92,
+          "responded": 66,
+          "response_rate": 72,
+          "sort_date": "2025-12-08T04:00:00"
+        },
+        {
+          "week": "Week of 2025-12-15",
+          "total": 70,
+          "responded": 55,
+          "response_rate": 79,
+          "sort_date": "2025-12-15T06:30:00"
+        },
+        {
+          "week": "Week of 2025-12-22",
+          "total": 84,
+          "responded": 62,
+          "response_rate": 74,
+          "sort_date": "2025-12-22T04:30:00"
+        },
+        {
+          "week": "Week of 2025-12-29",
+          "total": 71,
+          "responded": 49,
+          "response_rate": 69,
+          "sort_date": "2025-12-29T06:30:00"
+        }
+      ],
+      "overall_bookings": [
+        {
+          "week": "Week of 2025-10-27",
+          "total_bookings": 56,
+          "calls_done": 38,
+          "attendance_rate": 68,
+          "sort_date": "2025-10-27T03:30:00"
+        },
+        {
+          "week": "Week of 2025-11-03",
+          "total_bookings": 49,
+          "calls_done": 37,
+          "attendance_rate": 76,
+          "sort_date": "2025-11-03T06:30:00"
+        },
+        {
+          "week": "Week of 2025-11-10",
+          "total_bookings": 52,
+          "calls_done": 40,
+          "attendance_rate": 77,
+          "sort_date": "2025-11-10T03:15:00"
+        },
+        {
+          "week": "Week of 2025-11-17",
+          "total_bookings": 77,
+          "calls_done": 45,
+          "attendance_rate": 58,
+          "sort_date": "2025-11-17T04:30:00"
+        },
+        {
+          "week": "Week of 2025-11-24",
+          "total_bookings": 81,
+          "calls_done": 53,
+          "attendance_rate": 65,
+          "sort_date": "2025-11-24T06:30:00"
+        },
+        {
+          "week": "Week of 2025-12-01",
+          "total_bookings": 82,
+          "calls_done": 47,
+          "attendance_rate": 57,
+          "sort_date": "2025-12-01T06:30:00"
+        },
+        {
+          "week": "Week of 2025-12-08",
+          "total_bookings": 108,
+          "calls_done": 66,
+          "attendance_rate": 61,
+          "sort_date": "2025-12-08T04:00:00"
+        },
+        {
+          "week": "Week of 2025-12-15",
+          "total_bookings": 82,
+          "calls_done": 55,
+          "attendance_rate": 67,
+          "sort_date": "2025-12-15T06:30:00"
+        },
+        {
+          "week": "Week of 2025-12-22",
+          "total_bookings": 94,
+          "calls_done": 63,
+          "attendance_rate": 67,
+          "sort_date": "2025-12-22T04:30:00"
+        },
+        {
+          "week": "Week of 2025-12-29",
+          "total_bookings": 92,
+          "calls_done": 60,
+          "attendance_rate": 65,
+          "sort_date": "2025-12-29T02:30:00"
+        }
+      ]
+    },
+    "conversion_trend": [
+      {
+        "week": "Oct 27",
+        "calls_done": 38,
+        "purchases": 29,
+        "purchase_rate": 76,
+        "sort_date": "2025-10-27T00:00:00"
+      },
+      {
+        "week": "Nov 03",
+        "calls_done": 36,
+        "purchases": 30,
+        "purchase_rate": 83,
+        "sort_date": "2025-11-03T00:00:00"
+      },
+      {
+        "week": "Nov 10",
+        "calls_done": 43,
+        "purchases": 29,
+        "purchase_rate": 67,
+        "sort_date": "2025-11-10T00:00:00"
+      },
+      {
+        "week": "Nov 17",
+        "calls_done": 42,
+        "purchases": 34,
+        "purchase_rate": 81,
+        "sort_date": "2025-11-17T00:00:00"
+      },
+      {
+        "week": "Nov 24",
+        "calls_done": 53,
+        "purchases": 46,
+        "purchase_rate": 87,
+        "sort_date": "2025-11-24T00:00:00"
+      },
+      {
+        "week": "Dec 01",
+        "calls_done": 46,
+        "purchases": 34,
+        "purchase_rate": 74,
+        "sort_date": "2025-12-01T00:00:00"
+      },
+      {
+        "week": "Dec 08",
+        "calls_done": 69,
+        "purchases": 41,
+        "purchase_rate": 59,
+        "sort_date": "2025-12-08T00:00:00"
+      },
+      {
+        "week": "Dec 15",
+        "calls_done": 57,
+        "purchases": 37,
+        "purchase_rate": 65,
+        "sort_date": "2025-12-15T00:00:00"
+      },
+      {
+        "week": "Dec 22",
+        "calls_done": 65,
+        "purchases": 49,
+        "purchase_rate": 75,
+        "sort_date": "2025-12-22T00:00:00"
+      },
+      {
+        "week": "Dec 29",
+        "calls_done": 66,
+        "purchases": 49,
+        "purchase_rate": 74,
+        "sort_date": "2025-12-29T00:00:00"
+      }
+    ],
+    "conversion_by_intent": {
+      "by_intent": {
+        "high": [
+          {
+            "week": "Oct 27",
+            "calls_done": 28,
+            "purchases": 24,
+            "purchase_rate": 86,
+            "sort_date": "2025-10-27T00:00:00"
+          },
+          {
+            "week": "Nov 03",
+            "calls_done": 26,
+            "purchases": 26,
+            "purchase_rate": 100,
+            "sort_date": "2025-11-03T00:00:00"
+          },
+          {
+            "week": "Nov 10",
+            "calls_done": 27,
+            "purchases": 25,
+            "purchase_rate": 93,
+            "sort_date": "2025-11-10T00:00:00"
+          },
+          {
+            "week": "Nov 17",
+            "calls_done": 29,
+            "purchases": 28,
+            "purchase_rate": 97,
+            "sort_date": "2025-11-17T00:00:00"
+          },
+          {
+            "week": "Nov 24",
+            "calls_done": 40,
+            "purchases": 36,
+            "purchase_rate": 90,
+            "sort_date": "2025-11-24T00:00:00"
+          },
+          {
+            "week": "Dec 01",
+            "calls_done": 27,
+            "purchases": 25,
+            "purchase_rate": 93,
+            "sort_date": "2025-12-01T00:00:00"
+          },
+          {
+            "week": "Dec 08",
+            "calls_done": 15,
+            "purchases": 14,
+            "purchase_rate": 93,
+            "sort_date": "2025-12-08T00:00:00"
+          },
+          {
+            "week": "Dec 15",
+            "calls_done": 18,
+            "purchases": 14,
+            "purchase_rate": 78,
+            "sort_date": "2025-12-15T00:00:00"
+          },
+          {
+            "week": "Dec 22",
+            "calls_done": 25,
+            "purchases": 22,
+            "purchase_rate": 88,
+            "sort_date": "2025-12-22T00:00:00"
+          },
+          {
+            "week": "Dec 29",
+            "calls_done": 29,
+            "purchases": 24,
+            "purchase_rate": 83,
+            "sort_date": "2025-12-29T00:00:00"
+          }
+        ],
+        "medium": [
+          {
+            "week": "Oct 27",
+            "calls_done": 10,
+            "purchases": 5,
+            "purchase_rate": 50,
+            "sort_date": "2025-10-27T00:00:00"
+          },
+          {
+            "week": "Nov 03",
+            "calls_done": 8,
+            "purchases": 3,
+            "purchase_rate": 38,
+            "sort_date": "2025-11-03T00:00:00"
+          },
+          {
+            "week": "Nov 10",
+            "calls_done": 14,
+            "purchases": 4,
+            "purchase_rate": 29,
+            "sort_date": "2025-11-10T00:00:00"
+          },
+          {
+            "week": "Nov 17",
+            "calls_done": 13,
+            "purchases": 6,
+            "purchase_rate": 46,
+            "sort_date": "2025-11-17T00:00:00"
+          },
+          {
+            "week": "Nov 24",
+            "calls_done": 12,
+            "purchases": 10,
+            "purchase_rate": 83,
+            "sort_date": "2025-11-24T00:00:00"
+          },
+          {
+            "week": "Dec 01",
+            "calls_done": 16,
+            "purchases": 9,
+            "purchase_rate": 56,
+            "sort_date": "2025-12-01T00:00:00"
+          },
+          {
+            "week": "Dec 08",
+            "calls_done": 32,
+            "purchases": 21,
+            "purchase_rate": 66,
+            "sort_date": "2025-12-08T00:00:00"
+          },
+          {
+            "week": "Dec 15",
+            "calls_done": 21,
+            "purchases": 15,
+            "purchase_rate": 71,
+            "sort_date": "2025-12-15T00:00:00"
+          },
+          {
+            "week": "Dec 22",
+            "calls_done": 25,
+            "purchases": 20,
+            "purchase_rate": 80,
+            "sort_date": "2025-12-22T00:00:00"
+          },
+          {
+            "week": "Dec 29",
+            "calls_done": 28,
+            "purchases": 22,
+            "purchase_rate": 79,
+            "sort_date": "2025-12-29T00:00:00"
+          }
+        ],
+        "low": [
+          {
+            "week": "Oct 27",
+            "calls_done": 0,
+            "purchases": 0,
+            "purchase_rate": 0,
+            "sort_date": "2025-10-27T00:00:00"
+          },
+          {
+            "week": "Nov 03",
+            "calls_done": 2,
+            "purchases": 1,
+            "purchase_rate": 50,
+            "sort_date": "2025-11-03T00:00:00"
+          },
+          {
+            "week": "Nov 10",
+            "calls_done": 2,
+            "purchases": 0,
+            "purchase_rate": 0,
+            "sort_date": "2025-11-10T00:00:00"
+          },
+          {
+            "week": "Nov 17",
+            "calls_done": 0,
+            "purchases": 0,
+            "purchase_rate": 0,
+            "sort_date": "2025-11-17T00:00:00"
+          },
+          {
+            "week": "Nov 24",
+            "calls_done": 1,
+            "purchases": 0,
+            "purchase_rate": 0,
+            "sort_date": "2025-11-24T00:00:00"
+          },
+          {
+            "week": "Dec 01",
+            "calls_done": 3,
+            "purchases": 0,
+            "purchase_rate": 0,
+            "sort_date": "2025-12-01T00:00:00"
+          },
+          {
+            "week": "Dec 08",
+            "calls_done": 22,
+            "purchases": 6,
+            "purchase_rate": 27,
+            "sort_date": "2025-12-08T00:00:00"
+          },
+          {
+            "week": "Dec 15",
+            "calls_done": 18,
+            "purchases": 8,
+            "purchase_rate": 44,
+            "sort_date": "2025-12-15T00:00:00"
+          },
+          {
+            "week": "Dec 22",
+            "calls_done": 15,
+            "purchases": 7,
+            "purchase_rate": 47,
+            "sort_date": "2025-12-22T00:00:00"
+          },
+          {
+            "week": "Dec 29",
+            "calls_done": 9,
+            "purchases": 3,
+            "purchase_rate": 33,
+            "sort_date": "2025-12-29T00:00:00"
+          }
+        ]
+      },
+      "calls_low_intent": [
+        {
+          "week": "Oct 27",
+          "calls_done": 38,
+          "low_intent_count": 0,
+          "low_intent_percent": 0.0,
+          "sort_date": "2025-10-27T00:00:00"
+        },
+        {
+          "week": "Nov 03",
+          "calls_done": 36,
+          "low_intent_count": 2,
+          "low_intent_percent": 5.6,
+          "sort_date": "2025-11-03T00:00:00"
+        },
+        {
+          "week": "Nov 10",
+          "calls_done": 43,
+          "low_intent_count": 2,
+          "low_intent_percent": 4.7,
+          "sort_date": "2025-11-10T00:00:00"
+        },
+        {
+          "week": "Nov 17",
+          "calls_done": 42,
+          "low_intent_count": 0,
+          "low_intent_percent": 0.0,
+          "sort_date": "2025-11-17T00:00:00"
+        },
+        {
+          "week": "Nov 24",
+          "calls_done": 53,
+          "low_intent_count": 1,
+          "low_intent_percent": 1.9,
+          "sort_date": "2025-11-24T00:00:00"
+        },
+        {
+          "week": "Dec 01",
+          "calls_done": 46,
+          "low_intent_count": 3,
+          "low_intent_percent": 6.5,
+          "sort_date": "2025-12-01T00:00:00"
+        },
+        {
+          "week": "Dec 08",
+          "calls_done": 69,
+          "low_intent_count": 22,
+          "low_intent_percent": 31.9,
+          "sort_date": "2025-12-08T00:00:00"
+        },
+        {
+          "week": "Dec 15",
+          "calls_done": 57,
+          "low_intent_count": 18,
+          "low_intent_percent": 31.6,
+          "sort_date": "2025-12-15T00:00:00"
+        },
+        {
+          "week": "Dec 22",
+          "calls_done": 65,
+          "low_intent_count": 15,
+          "low_intent_percent": 23.1,
+          "sort_date": "2025-12-22T00:00:00"
+        },
+        {
+          "week": "Dec 29",
+          "calls_done": 66,
+          "low_intent_count": 9,
+          "low_intent_percent": 13.6,
+          "sort_date": "2025-12-29T00:00:00"
+        }
+      ]
+    },
+    "phone_calls": [
+      {
+        "agent": "Amruth",
+        "phone_calls_done": 45,
+        "phone_call_purchases": 35,
+        "high_rating": 29,
+        "purchase_rate": 78
+      },
+      {
+        "agent": "Dhruv",
+        "phone_calls_done": 2,
+        "phone_call_purchases": 2,
+        "high_rating": 50,
+        "purchase_rate": 100
+      },
+      {
+        "agent": "Vaibhav",
+        "phone_calls_done": 11,
+        "phone_call_purchases": 6,
+        "high_rating": 64,
+        "purchase_rate": 55
+      }
+    ],
+    "source_breakdown": {
+      "by_source": [
+        {
+          "source": "Appcues",
+          "bookings": 36,
+          "calls_done": 14,
+          "attendance_rate": 39
+        },
+        {
+          "source": "blitzkrieg",
+          "bookings": 29,
+          "calls_done": 12,
+          "attendance_rate": 41
+        },
+        {
+          "source": "Inbound_Direct",
+          "bookings": 21,
+          "calls_done": 21,
+          "attendance_rate": 100
+        },
+        {
+          "source": "APC_AR",
+          "bookings": 4,
+          "calls_done": 3,
+          "attendance_rate": 75
+        },
+        {
+          "source": "Appcues_Banner",
+          "bookings": 3,
+          "calls_done": 1,
+          "attendance_rate": 33
+        },
+        {
+          "source": "Inbound",
+          "bookings": 2,
+          "calls_done": 2,
+          "attendance_rate": 100
+        },
+        {
+          "source": "Appcues_neuron",
+          "bookings": 2,
+          "calls_done": 1,
+          "attendance_rate": 50
+        },
+        {
+          "source": "website",
+          "bookings": 2,
+          "calls_done": 1,
+          "attendance_rate": 50
+        },
+        {
+          "source": "Intercom",
+          "bookings": 2,
+          "calls_done": 2,
+          "attendance_rate": 100
+        },
+        {
+          "source": "APC2_AR",
+          "bookings": 1,
+          "calls_done": 1,
+          "attendance_rate": 100
+        },
+        {
+          "source": "deal",
+          "bookings": 1,
+          "calls_done": 0,
+          "attendance_rate": 0
+        },
+        {
+          "source": "blogs_inarticle",
+          "bookings": 1,
+          "calls_done": 1,
+          "attendance_rate": 100
+        },
+        {
+          "source": "cio",
+          "bookings": 1,
+          "calls_done": 1,
+          "attendance_rate": 100
+        },
+        {
+          "source": "Email",
+          "bookings": 1,
+          "calls_done": 0,
+          "attendance_rate": 0
+        }
+      ],
+      "by_source_agent": [
+        {
+          "source": "APC2_AR",
+          "agent": "Amruth Lal",
+          "bookings": 1,
+          "calls_done": 1,
+          "attendance_rate": 100
+        },
+        {
+          "source": "APC_AR",
+          "agent": "Amruth Lal",
+          "bookings": 4,
+          "calls_done": 3,
+          "attendance_rate": 75
+        },
+        {
+          "source": "Appcues",
+          "agent": "Amruth Lal",
+          "bookings": 29,
+          "calls_done": 10,
+          "attendance_rate": 34
+        },
+        {
+          "source": "Appcues",
+          "agent": "Dhruv Joshi",
+          "bookings": 2,
+          "calls_done": 0,
+          "attendance_rate": 0
+        },
+        {
+          "source": "Appcues",
+          "agent": "Vaibhav Bothra",
+          "bookings": 5,
+          "calls_done": 4,
+          "attendance_rate": 80
+        },
+        {
+          "source": "Appcues_Banner",
+          "agent": "Amruth Lal",
+          "bookings": 2,
+          "calls_done": 1,
+          "attendance_rate": 50
+        },
+        {
+          "source": "Appcues_Banner",
+          "agent": "Dhruv Joshi",
+          "bookings": 1,
+          "calls_done": 0,
+          "attendance_rate": 0
+        },
+        {
+          "source": "Appcues_neuron",
+          "agent": "Amruth Lal",
+          "bookings": 2,
+          "calls_done": 1,
+          "attendance_rate": 50
+        },
+        {
+          "source": "Email",
+          "agent": "Amruth Lal",
+          "bookings": 1,
+          "calls_done": 0,
+          "attendance_rate": 0
+        },
+        {
+          "source": "Inbound",
+          "agent": "Vaibhav Bothra",
+          "bookings": 2,
+          "calls_done": 2,
+          "attendance_rate": 100
+        },
+        {
+          "source": "Inbound_Direct",
+          "agent": "Amruth Lal",
+          "bookings": 20,
+          "calls_done": 20,
+          "attendance_rate": 100
+        },
+        {
+          "source": "Inbound_Direct",
+          "agent": "Dhruv Joshi",
+          "bookings": 1,
+          "calls_done": 1,
+          "attendance_rate": 100
+        },
+        {
+          "source": "Intercom",
+          "agent": "Vaibhav Bothra",
+          "bookings": 2,
+          "calls_done": 2,
+          "attendance_rate": 100
+        },
+        {
+          "source": "blitzkrieg",
+          "agent": "Amruth Lal",
+          "bookings": 19,
+          "calls_done": 5,
+          "attendance_rate": 26
+        },
+        {
+          "source": "blitzkrieg",
+          "agent": "Dhruv Joshi",
+          "bookings": 1,
+          "calls_done": 1,
+          "attendance_rate": 100
+        },
+        {
+          "source": "blitzkrieg",
+          "agent": "Vaibhav Bothra",
+          "bookings": 9,
+          "calls_done": 6,
+          "attendance_rate": 67
+        },
+        {
+          "source": "blogs_inarticle",
+          "agent": "Amruth Lal",
+          "bookings": 1,
+          "calls_done": 1,
+          "attendance_rate": 100
+        },
+        {
+          "source": "cio",
+          "agent": "Amruth Lal",
+          "bookings": 1,
+          "calls_done": 1,
+          "attendance_rate": 100
+        },
+        {
+          "source": "deal",
+          "agent": "Amruth Lal",
+          "bookings": 1,
+          "calls_done": 0,
+          "attendance_rate": 0
+        },
+        {
+          "source": "website",
+          "agent": "Amruth Lal",
+          "bookings": 2,
+          "calls_done": 1,
+          "attendance_rate": 50
+        }
+      ],
+      "leakage": {
+        "total_calls_booked": 106,
+        "cant_happen_calls": 14,
+        "net_bookings": 92,
+        "leakage_rate": 13
+      },
+      "booking_source": []
+    },
+    "monthly_sales": {
+      "monthly": [
+        {
+          "month": "2025-10",
+          "calls_done": 29,
+          "purchases": 22,
+          "purchase_rate": 76
+        },
+        {
+          "month": "2025-11",
+          "calls_done": 183,
+          "purchases": 146,
+          "purchase_rate": 80
+        },
+        {
+          "month": "2025-12",
+          "calls_done": 261,
+          "purchases": 181,
+          "purchase_rate": 69
+        },
+        {
+          "month": "2026-01",
+          "calls_done": 42,
+          "purchases": 29,
+          "purchase_rate": 69
+        }
+      ],
+      "effective_attendance": [
+        {
+          "month": "2025-10",
+          "calls_booked": 50,
+          "calls_done": 29,
+          "effective_attendance_rate": 58
+        },
+        {
+          "month": "2025-11",
+          "calls_booked": 317,
+          "calls_done": 183,
+          "effective_attendance_rate": 58
+        },
+        {
+          "month": "2025-12",
+          "calls_booked": 463,
+          "calls_done": 261,
+          "effective_attendance_rate": 56
+        },
+        {
+          "month": "2026-01",
+          "calls_booked": 60,
+          "calls_done": 42,
+          "effective_attendance_rate": 70
+        }
+      ]
+    },
+    "marketing": {
+      "revenue_current": 116,
+      "revenue_target": 140,
+      "revenue_red_alert": 135,
+      "total_customers_current": 273,
+      "total_customers_target": 350,
+      "total_customers_red_alert": 325,
+      "marketing_customers_current": 151,
+      "marketing_customers_red_alert": 175,
+      "sales_customers_current": 122,
+      "sales_customers_red_alert": 150
+    },
+    "daily_calls_purchases": {
+      "filter": {
+        "start_date": "2025-12-15",
+        "end_date": "2026-01-08"
+      },
+      "calls_trend": [
+        {
+          "date": "2025-12-15",
+          "day_name": "Monday",
+          "calls_done": 10
+        },
+        {
+          "date": "2025-12-16",
+          "day_name": "Tuesday",
+          "calls_done": 7
+        },
+        {
+          "date": "2025-12-17",
+          "day_name": "Wednesday",
+          "calls_done": 7
+        },
+        {
+          "date": "2025-12-18",
+          "day_name": "Thursday",
+          "calls_done": 4
+        },
+        {
+          "date": "2025-12-19",
+          "day_name": "Friday",
+          "calls_done": 13
+        },
+        {
+          "date": "2025-12-20",
+          "day_name": "Saturday",
+          "calls_done": 6
+        },
+        {
+          "date": "2025-12-21",
+          "day_name": "Sunday",
+          "calls_done": 10
+        },
+        {
+          "date": "2025-12-22",
+          "day_name": "Monday",
+          "calls_done": 13
+        },
+        {
+          "date": "2025-12-23",
+          "day_name": "Tuesday",
+          "calls_done": 11
+        },
+        {
+          "date": "2025-12-24",
+          "day_name": "Wednesday",
+          "calls_done": 8
+        },
+        {
+          "date": "2025-12-25",
+          "day_name": "Thursday",
+          "calls_done": 8
+        },
+        {
+          "date": "2025-12-26",
+          "day_name": "Friday",
+          "calls_done": 11
+        },
+        {
+          "date": "2025-12-27",
+          "day_name": "Saturday",
+          "calls_done": 7
+        },
+        {
+          "date": "2025-12-28",
+          "day_name": "Sunday",
+          "calls_done": 7
+        },
+        {
+          "date": "2025-12-29",
+          "day_name": "Monday",
+          "calls_done": 9
+        },
+        {
+          "date": "2025-12-30",
+          "day_name": "Tuesday",
+          "calls_done": 9
+        },
+        {
+          "date": "2025-12-31",
+          "day_name": "Wednesday",
+          "calls_done": 6
+        },
+        {
+          "date": "2026-01-01",
+          "day_name": "Thursday",
+          "calls_done": 9
+        },
+        {
+          "date": "2026-01-02",
+          "day_name": "Friday",
+          "calls_done": 9
+        },
+        {
+          "date": "2026-01-03",
+          "day_name": "Saturday",
+          "calls_done": 12
+        },
+        {
+          "date": "2026-01-04",
+          "day_name": "Sunday",
+          "calls_done": 12
+        },
+        {
+          "date": "2026-01-05",
+          "day_name": "Monday",
+          "calls_done": 12
+        },
+        {
+          "date": "2026-01-06",
+          "day_name": "Tuesday",
+          "calls_done": 11
+        },
+        {
+          "date": "2026-01-07",
+          "day_name": "Wednesday",
+          "calls_done": 9
+        },
+        {
+          "date": "2026-01-08",
+          "day_name": "Thursday",
+          "calls_done": 7
+        }
+      ],
+      "purchases_trend": [
+        {
+          "date": "2025-12-15",
+          "day_name": "Monday",
+          "calls_done": 10,
+          "purchases": 7,
+          "purchase_rate": 70.0
+        },
+        {
+          "date": "2025-12-16",
+          "day_name": "Tuesday",
+          "calls_done": 7,
+          "purchases": 3,
+          "purchase_rate": 42.9
+        },
+        {
+          "date": "2025-12-17",
+          "day_name": "Wednesday",
+          "calls_done": 7,
+          "purchases": 5,
+          "purchase_rate": 71.4
+        },
+        {
+          "date": "2025-12-18",
+          "day_name": "Thursday",
+          "calls_done": 4,
+          "purchases": 3,
+          "purchase_rate": 75.0
+        },
+        {
+          "date": "2025-12-19",
+          "day_name": "Friday",
+          "calls_done": 13,
+          "purchases": 5,
+          "purchase_rate": 38.5
+        },
+        {
+          "date": "2025-12-20",
+          "day_name": "Saturday",
+          "calls_done": 6,
+          "purchases": 6,
+          "purchase_rate": 100.0
+        },
+        {
+          "date": "2025-12-21",
+          "day_name": "Sunday",
+          "calls_done": 10,
+          "purchases": 8,
+          "purchase_rate": 80.0
+        },
+        {
+          "date": "2025-12-22",
+          "day_name": "Monday",
+          "calls_done": 13,
+          "purchases": 10,
+          "purchase_rate": 76.9
+        },
+        {
+          "date": "2025-12-23",
+          "day_name": "Tuesday",
+          "calls_done": 11,
+          "purchases": 10,
+          "purchase_rate": 90.9
+        },
+        {
+          "date": "2025-12-24",
+          "day_name": "Wednesday",
+          "calls_done": 8,
+          "purchases": 5,
+          "purchase_rate": 62.5
+        },
+        {
+          "date": "2025-12-25",
+          "day_name": "Thursday",
+          "calls_done": 8,
+          "purchases": 6,
+          "purchase_rate": 75.0
+        },
+        {
+          "date": "2025-12-26",
+          "day_name": "Friday",
+          "calls_done": 11,
+          "purchases": 8,
+          "purchase_rate": 72.7
+        },
+        {
+          "date": "2025-12-27",
+          "day_name": "Saturday",
+          "calls_done": 7,
+          "purchases": 5,
+          "purchase_rate": 71.4
+        },
+        {
+          "date": "2025-12-28",
+          "day_name": "Sunday",
+          "calls_done": 7,
+          "purchases": 5,
+          "purchase_rate": 71.4
+        },
+        {
+          "date": "2025-12-29",
+          "day_name": "Monday",
+          "calls_done": 9,
+          "purchases": 7,
+          "purchase_rate": 77.8
+        },
+        {
+          "date": "2025-12-30",
+          "day_name": "Tuesday",
+          "calls_done": 9,
+          "purchases": 7,
+          "purchase_rate": 77.8
+        },
+        {
+          "date": "2025-12-31",
+          "day_name": "Wednesday",
+          "calls_done": 6,
+          "purchases": 6,
+          "purchase_rate": 100.0
+        },
+        {
+          "date": "2026-01-01",
+          "day_name": "Thursday",
+          "calls_done": 9,
+          "purchases": 7,
+          "purchase_rate": 77.8
+        },
+        {
+          "date": "2026-01-02",
+          "day_name": "Friday",
+          "calls_done": 9,
+          "purchases": 7,
+          "purchase_rate": 77.8
+        },
+        {
+          "date": "2026-01-03",
+          "day_name": "Saturday",
+          "calls_done": 12,
+          "purchases": 7,
+          "purchase_rate": 58.3
+        },
+        {
+          "date": "2026-01-04",
+          "day_name": "Sunday",
+          "calls_done": 12,
+          "purchases": 8,
+          "purchase_rate": 66.7
+        },
+        {
+          "date": "2026-01-05",
+          "day_name": "Monday",
+          "calls_done": 12,
+          "purchases": 4,
+          "purchase_rate": 33.3
+        },
+        {
+          "date": "2026-01-06",
+          "day_name": "Tuesday",
+          "calls_done": 11,
+          "purchases": 4,
+          "purchase_rate": 36.4
+        },
+        {
+          "date": "2026-01-07",
+          "day_name": "Wednesday",
+          "calls_done": 9,
+          "purchases": 2,
+          "purchase_rate": 22.2
+        },
+        {
+          "date": "2026-01-08",
+          "day_name": "Thursday",
+          "calls_done": 7,
+          "purchases": 2,
+          "purchase_rate": 28.6
+        }
+      ],
+      "summary": {
+        "total_calls": 227,
+        "total_purchases": 147,
+        "avg_purchase_rate": 64.8
+      }
+    },
+    "daily_attendance_bookings": {
+      "filter": {
+        "start_date": "2025-12-15",
+        "end_date": "2026-01-02"
+      },
+      "attendance_trend": [
+        {
+          "date": "2025-12-15",
+          "day_name": "Monday",
+          "bookings": 12,
+          "calls_done": 7,
+          "attendance_rate": 58.3
+        },
+        {
+          "date": "2025-12-16",
+          "day_name": "Tuesday",
+          "bookings": 11,
+          "calls_done": 6,
+          "attendance_rate": 54.5
+        },
+        {
+          "date": "2025-12-17",
+          "day_name": "Wednesday",
+          "bookings": 5,
+          "calls_done": 4,
+          "attendance_rate": 80.0
+        },
+        {
+          "date": "2025-12-18",
+          "day_name": "Thursday",
+          "bookings": 13,
+          "calls_done": 6,
+          "attendance_rate": 46.2
+        },
+        {
+          "date": "2025-12-19",
+          "day_name": "Friday",
+          "bookings": 11,
+          "calls_done": 9,
+          "attendance_rate": 81.8
+        },
+        {
+          "date": "2025-12-20",
+          "day_name": "Saturday",
+          "bookings": 4,
+          "calls_done": 2,
+          "attendance_rate": 50.0
+        },
+        {
+          "date": "2025-12-21",
+          "day_name": "Sunday",
+          "bookings": 14,
+          "calls_done": 9,
+          "attendance_rate": 64.3
+        },
+        {
+          "date": "2025-12-22",
+          "day_name": "Monday",
+          "bookings": 13,
+          "calls_done": 11,
+          "attendance_rate": 84.6
+        },
+        {
+          "date": "2025-12-23",
+          "day_name": "Tuesday",
+          "bookings": 15,
+          "calls_done": 8,
+          "attendance_rate": 53.3
+        },
+        {
+          "date": "2025-12-24",
+          "day_name": "Wednesday",
+          "bookings": 12,
+          "calls_done": 7,
+          "attendance_rate": 58.3
+        },
+        {
+          "date": "2025-12-25",
+          "day_name": "Thursday",
+          "bookings": 10,
+          "calls_done": 6,
+          "attendance_rate": 60.0
+        },
+        {
+          "date": "2025-12-26",
+          "day_name": "Friday",
+          "bookings": 12,
+          "calls_done": 8,
+          "attendance_rate": 66.7
+        },
+        {
+          "date": "2025-12-27",
+          "day_name": "Saturday",
+          "bookings": 12,
+          "calls_done": 5,
+          "attendance_rate": 41.7
+        },
+        {
+          "date": "2025-12-28",
+          "day_name": "Sunday",
+          "bookings": 10,
+          "calls_done": 8,
+          "attendance_rate": 80.0
+        },
+        {
+          "date": "2025-12-29",
+          "day_name": "Monday",
+          "bookings": 9,
+          "calls_done": 5,
+          "attendance_rate": 55.6
+        },
+        {
+          "date": "2025-12-30",
+          "day_name": "Tuesday",
+          "bookings": 11,
+          "calls_done": 5,
+          "attendance_rate": 45.5
+        },
+        {
+          "date": "2025-12-31",
+          "day_name": "Wednesday",
+          "bookings": 13,
+          "calls_done": 7,
+          "attendance_rate": 53.8
+        },
+        {
+          "date": "2026-01-01",
+          "day_name": "Thursday",
+          "bookings": 5,
+          "calls_done": 4,
+          "attendance_rate": 80.0
+        },
+        {
+          "date": "2026-01-02",
+          "day_name": "Friday",
+          "bookings": 8,
+          "calls_done": 3,
+          "attendance_rate": 37.5
+        }
+      ],
+      "bookings_trend": [
+        {
+          "date": "2025-12-15",
+          "day_name": "Monday",
+          "total_bookings": 12,
+          "raw_prospect": 11,
+          "good_prospect": 1
+        },
+        {
+          "date": "2025-12-16",
+          "day_name": "Tuesday",
+          "total_bookings": 11,
+          "raw_prospect": 11,
+          "good_prospect": 0
+        },
+        {
+          "date": "2025-12-17",
+          "day_name": "Wednesday",
+          "total_bookings": 5,
+          "raw_prospect": 3,
+          "good_prospect": 2
+        },
+        {
+          "date": "2025-12-18",
+          "day_name": "Thursday",
+          "total_bookings": 13,
+          "raw_prospect": 13,
+          "good_prospect": 0
+        },
+        {
+          "date": "2025-12-19",
+          "day_name": "Friday",
+          "total_bookings": 11,
+          "raw_prospect": 9,
+          "good_prospect": 2
+        },
+        {
+          "date": "2025-12-20",
+          "day_name": "Saturday",
+          "total_bookings": 4,
+          "raw_prospect": 3,
+          "good_prospect": 1
+        },
+        {
+          "date": "2025-12-21",
+          "day_name": "Sunday",
+          "total_bookings": 14,
+          "raw_prospect": 10,
+          "good_prospect": 4
+        },
+        {
+          "date": "2025-12-22",
+          "day_name": "Monday",
+          "total_bookings": 13,
+          "raw_prospect": 12,
+          "good_prospect": 1
+        },
+        {
+          "date": "2025-12-23",
+          "day_name": "Tuesday",
+          "total_bookings": 15,
+          "raw_prospect": 10,
+          "good_prospect": 5
+        },
+        {
+          "date": "2025-12-24",
+          "day_name": "Wednesday",
+          "total_bookings": 12,
+          "raw_prospect": 9,
+          "good_prospect": 3
+        },
+        {
+          "date": "2025-12-25",
+          "day_name": "Thursday",
+          "total_bookings": 10,
+          "raw_prospect": 10,
+          "good_prospect": 0
+        },
+        {
+          "date": "2025-12-26",
+          "day_name": "Friday",
+          "total_bookings": 12,
+          "raw_prospect": 11,
+          "good_prospect": 1
+        },
+        {
+          "date": "2025-12-27",
+          "day_name": "Saturday",
+          "total_bookings": 12,
+          "raw_prospect": 11,
+          "good_prospect": 1
+        },
+        {
+          "date": "2025-12-28",
+          "day_name": "Sunday",
+          "total_bookings": 10,
+          "raw_prospect": 9,
+          "good_prospect": 1
+        },
+        {
+          "date": "2025-12-29",
+          "day_name": "Monday",
+          "total_bookings": 9,
+          "raw_prospect": 7,
+          "good_prospect": 2
+        },
+        {
+          "date": "2025-12-30",
+          "day_name": "Tuesday",
+          "total_bookings": 11,
+          "raw_prospect": 8,
+          "good_prospect": 3
+        },
+        {
+          "date": "2025-12-31",
+          "day_name": "Wednesday",
+          "total_bookings": 13,
+          "raw_prospect": 11,
+          "good_prospect": 2
+        },
+        {
+          "date": "2026-01-01",
+          "day_name": "Thursday",
+          "total_bookings": 5,
+          "raw_prospect": 3,
+          "good_prospect": 2
+        },
+        {
+          "date": "2026-01-02",
+          "day_name": "Friday",
+          "total_bookings": 8,
+          "raw_prospect": 7,
+          "good_prospect": 1
+        }
+      ],
+      "summary": {
+        "total_bookings": 200,
+        "total_done": 120,
+        "avg_attendance_rate": 60.0
+      }
+    }
+  }
+}

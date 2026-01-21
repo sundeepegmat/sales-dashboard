@@ -1,0 +1,21 @@
+{
+    "metrics_filter": {
+        "start_date": "2026-01-12",
+        "end_date": "2026-01-18"
+    },
+    "trends_filter": {
+        "start_date": "2025-10-27",
+        "end_date": "2026-01-18"
+    },
+    "daily_trends_filter": {
+        "calls_purchases": {
+            "start_date": "2025-12-15",
+            "end_date": "2026-01-20"
+        },
+        "attendance_bookings": {
+            "start_date": "2025-12-15",
+            "end_date": "2026-01-09"
+        }
+    },
+    "last_updated": "2026-01-20T08:05:23.452321"
+}

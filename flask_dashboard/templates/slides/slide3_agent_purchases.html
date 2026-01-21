@@ -1,0 +1,176 @@
+<!-- Slide 3: Agent Sales Performance -->
+<h2 class="page-title">Slide 3: Agent Sales Performance</h2>
+
+<div class="alert-banner" style="background: #dbeafe; border-color: #3b82f6; color: #1e40af;">
+    <span>&#128197;</span> Analysis Period: {{ start_date }} to {{ end_date }}
+</div>
+
+{% if agents and agents|length > 0 %}
+<!-- Agent Sales Performance Table -->
+<h3 class="section-title">Agent Sales Performance Table</h3>
+
+<div class="card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Agent</th>
+                    <th>Calls_Done</th>
+                    <th>Purchases</th>
+                    <th>High_Rating_Percent</th>
+                    <th>Purchase_Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in agents %}
+                <tr>
+                    <td>{{ a.agent }}</td>
+                    <td>{{ a.calls_done }}</td>
+                    <td>{{ a.purchases }}</td>
+                    <td>{{ a.high_rating }}%</td>
+                    <td>{{ a.purchase_rate }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="two-col" style="margin-top: 24px;">
+    <div class="chart-container">
+        <h3 style="font-size: 1rem; color: #1e293b; margin-bottom: 16px;">High Rating Percent by Agent</h3>
+        <div id="high-rating-chart"></div>
+    </div>
+
+    <div class="chart-container">
+        <h3 style="font-size: 1rem; color: #1e293b; margin-bottom: 16px;">Purchase Rate by Agent</h3>
+        <div id="purchase-rate-chart"></div>
+    </div>
+</div>
+
+<!-- Summary Metrics -->
+<div class="metrics-grid" style="margin-top: 24px;">
+    <div class="metric-card">
+        <div class="metric-label">Total Calls</div>
+        <div class="metric-value">{{ agents|map(attribute='calls_done')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Total Purchases</div>
+        <div class="metric-value">{{ agents|map(attribute='purchases')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Overall Purchase Rate</div>
+        {% set total_calls = agents|map(attribute='calls_done')|sum %}
+        {% set total_purchases = agents|map(attribute='purchases')|sum %}
+        <div class="metric-value">{{ ((total_purchases / total_calls * 100) if total_calls > 0 else 0)|round(1) }}%</div>
+    </div>
+</div>
+
+<!-- Calculation Logic Section -->
+<div class="logic-section">
+    <button class="logic-toggle" onclick="toggleLogic(this)">
+        <span class="toggle-icon">&#9660;</span>
+        <span>How are these metrics calculated?</span>
+    </button>
+    <div class="logic-content" style="display:none;">
+        <div class="data-source">
+            <strong>Data Source:</strong> Sales_Call_Tracker-Grid view.csv (sales call data)
+        </div>
+
+        <h4>Calls Done</h4>
+        <p>Total number of sales calls completed by each agent within the date range.</p>
+        <div class="formula">Calls Done = COUNT(rows where Sales_Agent matches AND Call_Done_Date within range)</div>
+
+        <h4>Purchases</h4>
+        <p>Number of calls that resulted in a purchase for each agent.</p>
+        <div class="formula">Purchases = COUNT(rows where Purchase_Status = 'Purchased')</div>
+
+        <h4>High Rating Percent</h4>
+        <p>Percentage of calls where the prospect was rated as "High" purchase intent.</p>
+        <div class="formula">High Rating % = (COUNT(Purchase_Intent = 'High') / Calls Done) × 100</div>
+        <p><strong>Target:</strong> 55%</p>
+
+        <h4>Purchase Rate</h4>
+        <p>Conversion rate - percentage of calls that resulted in a purchase.</p>
+        <div class="formula">Purchase Rate = (Purchases / Calls Done) × 100</div>
+        <p><strong>Target:</strong> 60%</p>
+
+        <h4>Summary Metrics</h4>
+        <p>Aggregate totals across all agents.</p>
+        <div class="formula">Total Calls = SUM(all agents' Calls Done)</div>
+        <div class="formula">Total Purchases = SUM(all agents' Purchases)</div>
+        <div class="formula">Overall Purchase Rate = (Total Purchases / Total Calls) × 100</div>
+    </div>
+</div>
+
+<script>
+// High Rating Chart
+var highRatingOptions = {
+    series: [{
+        name: 'High Rating %',
+        data: [{% for a in agents %}{{ a.high_rating }}{% if not loop.last %}, {% endif %}{% endfor %}]
+    }],
+    chart: { type: 'bar', height: 400 },
+    plotOptions: { bar: { borderRadius: 4, columnWidth: '60%' } },
+    colors: ['#f97316'],
+    xaxis: {
+        categories: [{% for a in agents %}'{{ a.agent }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45, style: { fontSize: '11px' } }
+    },
+    yaxis: { labels: { formatter: function(val) { return val + '%'; } } },
+    annotations: {
+        yaxis: [{
+            y: 55,
+            borderColor: '#f97316',
+            strokeDashArray: 4,
+            label: { text: 'Target: 55%', style: { color: '#f97316', background: '#fff7ed' } }
+        }]
+    },
+    dataLabels: {
+        enabled: true,
+        formatter: function(val) { return val + '%'; },
+        style: { fontSize: '10px' }
+    }
+};
+new ApexCharts(document.getElementById('high-rating-chart'), highRatingOptions).render();
+
+// Purchase Rate Chart
+var purchaseRateOptions = {
+    series: [{
+        name: 'Purchase Rate',
+        data: [{% for a in agents %}{{ a.purchase_rate }}{% if not loop.last %}, {% endif %}{% endfor %}]
+    }],
+    chart: { type: 'bar', height: 400 },
+    plotOptions: { bar: { borderRadius: 4, columnWidth: '60%' } },
+    colors: ['#10b981'],
+    xaxis: {
+        categories: [{% for a in agents %}'{{ a.agent }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45, style: { fontSize: '11px' } }
+    },
+    yaxis: { labels: { formatter: function(val) { return val + '%'; } } },
+    annotations: {
+        yaxis: [{
+            y: 60,
+            borderColor: '#10b981',
+            strokeDashArray: 4,
+            label: { text: 'Target: 60%', style: { color: '#10b981', background: '#ecfdf5' } }
+        }]
+    },
+    dataLabels: {
+        enabled: true,
+        formatter: function(val) { return val + '%'; },
+        style: { fontSize: '10px' }
+    }
+};
+new ApexCharts(document.getElementById('purchase-rate-chart'), purchaseRateOptions).render();
+</script>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">&#128176;</div>
+    <h3>No Data Available</h3>
+    <p>No sales data available for the selected date range.</p>
+</div>
+{% endif %}

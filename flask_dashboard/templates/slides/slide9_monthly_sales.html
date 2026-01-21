@@ -1,0 +1,222 @@
+<!-- Slide 9: Monthly Sales Analysis -->
+<h2 class="page-title">Slide 9: Monthly Sales Analysis</h2>
+
+<div class="alert-banner" style="background: #dbeafe; border-color: #3b82f6; color: #1e40af;">
+    <span>&#128197;</span> Analysis Period: {{ start_date }} to {{ end_date }}
+</div>
+
+{% if monthly_metrics and monthly_metrics|length > 0 %}
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Monthly Sales Breakdown ({{ monthly_metrics|length }} months)</h3>
+
+<!-- Summary Metrics -->
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-label">Total Calls Done</div>
+        <div class="metric-value">{{ monthly_metrics|map(attribute='calls_done')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Total Purchases</div>
+        <div class="metric-value">{{ monthly_metrics|map(attribute='purchases')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Overall Purchase Rate</div>
+        {% set total_calls = monthly_metrics|map(attribute='calls_done')|sum %}
+        {% set total_purchases = monthly_metrics|map(attribute='purchases')|sum %}
+        <div class="metric-value">{{ ((total_purchases / total_calls * 100) if total_calls > 0 else 0)|round(0)|int }}%</div>
+    </div>
+</div>
+
+<!-- Effective Attendance Rate by Month -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Effective Attendance Rate by Month</h3>
+<div class="alert-banner" style="background: #dbeafe; border-color: #3b82f6; color: #1e40af; margin-bottom: 16px;">
+    <span>&#128712;</span> This table shows Calls Booked (from Attendance Data) vs Calls Done (from Sales Call Tracker) and the resulting Effective Attendance Rate
+</div>
+
+{% if attendance_metrics and attendance_metrics|length > 0 %}
+<div class="card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Calls_Booked</th>
+                    <th>Calls_Done</th>
+                    <th>Effective_Attendance_Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in attendance_metrics %}
+                <tr>
+                    <td>{{ a.month }}</td>
+                    <td>{{ a.calls_booked }}</td>
+                    <td>{{ a.calls_done }}</td>
+                    <td>{{ a.effective_attendance_rate }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Attendance Summary Metrics -->
+<div class="metrics-grid" style="margin-top: 16px;">
+    <div class="metric-card">
+        <div class="metric-label">Total Calls Booked</div>
+        <div class="metric-value">{{ attendance_metrics|map(attribute='calls_booked')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Total Calls Done</div>
+        <div class="metric-value">{{ attendance_metrics|map(attribute='calls_done')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Overall Effective Attendance Rate</div>
+        {% set total_booked = attendance_metrics|map(attribute='calls_booked')|sum %}
+        {% set total_done = attendance_metrics|map(attribute='calls_done')|sum %}
+        <div class="metric-value">{{ ((total_done / total_booked * 100) if total_booked > 0 else 0)|round(0)|int }}%</div>
+    </div>
+</div>
+{% else %}
+<div class="alert-banner" style="background: #fef3c7; border-color: #f59e0b; color: #92400e;">
+    <span>&#9888;</span> No attendance data available for effective attendance rate calculation.
+</div>
+{% endif %}
+
+<!-- Monthly Sales Breakdown Table -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Monthly Sales Breakdown Table</h3>
+
+<div class="card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Calls_Done</th>
+                    <th>Purchases</th>
+                    <th>Purchase_Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in monthly_metrics %}
+                <tr>
+                    <td>{{ m.month }}</td>
+                    <td>{{ m.calls_done }}</td>
+                    <td>{{ m.purchases }}</td>
+                    <td>{{ m.purchase_rate }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Monthly Sales Trends Chart -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Monthly Sales Trends</h3>
+
+<div class="chart-container">
+    <div id="monthly-sales-chart"></div>
+</div>
+
+<!-- Monthly Purchase Rate Insights -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Monthly Purchase Rate Insights</h3>
+
+<div class="card">
+    {% set best_month = monthly_metrics|sort(attribute='purchase_rate', reverse=true)|first %}
+    {% set worst_month = monthly_metrics|sort(attribute='purchase_rate')|first %}
+    {% set avg_rate = (monthly_metrics|map(attribute='purchase_rate')|sum / monthly_metrics|length)|round(1) %}
+    {% set max_calls_month = monthly_metrics|sort(attribute='calls_done', reverse=true)|first %}
+
+    <ul style="padding-left: 20px; color: #1e293b; line-height: 1.8;">
+        <li><strong>Peak Performance:</strong> {{ best_month.month }} achieved the highest purchase rate at {{ best_month.purchase_rate }}% with {{ best_month.purchases }} purchases from {{ best_month.calls_done }} calls</li>
+        <li><strong>Growth Opportunity:</strong> {{ worst_month.month }} shows the lowest conversion at {{ worst_month.purchase_rate }}%, indicating potential for targeted improvement strategies</li>
+        <li><strong>Overall Trend:</strong> Average monthly purchase rate of {{ avg_rate }}% across {{ monthly_metrics|length }} months suggests {% if avg_rate >= 60 %}strong{% elif avg_rate >= 40 %}moderate{% else %}developing{% endif %} conversion performance</li>
+        <li><strong>Volume Impact:</strong> Higher call volumes in {{ max_calls_month.month }} ({{ max_calls_month.calls_done }} calls) correlate with {% if max_calls_month.purchase_rate > avg_rate %}increased{% else %}maintained{% endif %} conversion efficiency</li>
+    </ul>
+</div>
+
+<script>
+var monthlySalesOptions = {
+    series: [
+        { name: 'Calls Done', type: 'line', data: [{% for m in monthly_metrics %}{{ m.calls_done }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+        { name: 'Purchase Rate (%)', type: 'line', data: [{% for m in monthly_metrics %}{{ m.purchase_rate }}{% if not loop.last %}, {% endif %}{% endfor %}] }
+    ],
+    chart: { height: 500, type: 'line', toolbar: { show: false } },
+    stroke: { curve: 'smooth', width: 3 },
+    colors: ['#6366f1', '#10b981'],
+    markers: { size: 8 },
+    xaxis: {
+        categories: [{% for m in monthly_metrics %}'{{ m.month }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45 }
+    },
+    yaxis: [
+        { title: { text: 'Calls Done' } },
+        { opposite: true, title: { text: 'Purchase Rate (%)' }, labels: { formatter: function(val) { return val + '%'; } } }
+    ],
+    legend: { position: 'top' },
+    dataLabels: {
+        enabled: true,
+        formatter: function(val, { seriesIndex }) {
+            return seriesIndex === 1 ? val + '%' : val;
+        }
+    }
+};
+new ApexCharts(document.getElementById('monthly-sales-chart'), monthlySalesOptions).render();
+</script>
+
+<!-- Calculation Logic Section -->
+<div class="logic-section">
+    <button class="logic-toggle" onclick="toggleLogic(this)">
+        <span class="toggle-icon">&#9660;</span>
+        <span>How are these metrics calculated?</span>
+    </button>
+    <div class="logic-content" style="display:none;">
+        <div class="data-source">
+            <strong>Data Sources:</strong> Sales_Call_Tracker-Grid view.csv (sales data), weekly_attendance_status-Grid view.csv (attendance data)
+        </div>
+
+        <h4>Monthly Grouping</h4>
+        <p>Data is grouped by month using the <code>Call_Done_Date</code> field from sales data.</p>
+        <div class="formula">Month = YEAR-MONTH format (e.g., 2024-01, 2024-02)</div>
+
+        <h4>Calls Done (per Month)</h4>
+        <p>Total number of sales calls completed in each month.</p>
+        <div class="formula">Calls Done = COUNT(rows where Call_Done_Date falls within month)</div>
+
+        <h4>Purchases (per Month)</h4>
+        <p>Number of calls resulting in a purchase each month.</p>
+        <div class="formula">Purchases = COUNT(rows where Purchase_Status = 'Purchased')</div>
+
+        <h4>Purchase Rate (per Month)</h4>
+        <p>Monthly conversion rate.</p>
+        <div class="formula">Purchase Rate = (Purchases / Calls Done) × 100</div>
+
+        <h4>Effective Attendance Rate</h4>
+        <p>Compares Calls Booked (from Attendance Data) vs Calls Done (from Sales Data).</p>
+        <div class="formula">Calls Booked = COUNT(attendance bookings per month)</div>
+        <div class="formula">Calls Done = COUNT(sales calls completed per month)</div>
+        <div class="formula">Effective Attendance Rate = (Calls Done / Calls Booked) × 100</div>
+
+        <h4>Summary Metrics</h4>
+        <div class="formula">Total Calls Done = SUM(monthly Calls Done)</div>
+        <div class="formula">Total Purchases = SUM(monthly Purchases)</div>
+        <div class="formula">Overall Purchase Rate = (Total Purchases / Total Calls Done) × 100</div>
+
+        <h4>Insights</h4>
+        <ul>
+            <li><strong>Peak Performance:</strong> Month with highest purchase rate</li>
+            <li><strong>Growth Opportunity:</strong> Month with lowest purchase rate</li>
+            <li><strong>Volume Impact:</strong> Month with highest call volume</li>
+        </ul>
+    </div>
+</div>
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">&#128197;</div>
+    <h3>No Data Available</h3>
+    <p>No sales data available for the selected date range.</p>
+</div>
+{% endif %}

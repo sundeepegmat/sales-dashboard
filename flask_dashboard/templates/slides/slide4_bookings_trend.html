@@ -1,0 +1,202 @@
+<!-- Slide 4: Bookings Trend Analysis -->
+<h2 class="page-title">Slide 4: Bookings Trend Analysis</h2>
+
+<div class="alert-banner" style="background: #dbeafe; border-color: #3b82f6; color: #1e40af;">
+    <span>&#128197;</span> Analysis Period: {{ start_date }} to {{ end_date }}
+</div>
+
+{% if trend and trend|length > 0 %}
+<h3 class="section-title">Showing {{ trend|length }} weeks of booking data</h3>
+
+<!-- Summary Metrics -->
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-label">Total Bookings</div>
+        <div class="metric-value">{{ trend|map(attribute='total_bookings')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Average Weekly Bookings</div>
+        <div class="metric-value">{{ (trend|map(attribute='total_bookings')|sum / trend|length)|round(1) }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Weeks Analyzed</div>
+        <div class="metric-value">{{ trend|length }}</div>
+    </div>
+</div>
+
+<!-- Weekly Bookings Trend by Cohort Chart (excluding Inbound_Direct) -->
+<h3 class="section-title">Weekly Bookings Trend by Cohort (Outbound Only)</h3>
+
+<div class="chart-container">
+    <div id="bookings-trend-chart"></div>
+</div>
+
+<!-- Data Table -->
+<h3 class="section-title">Detailed Bookings Data</h3>
+
+<div class="card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Week</th>
+                    <th>Total_Bookings</th>
+                    <th>Raw_Prospect_Bookings</th>
+                    <th>Good_Prospect_Bookings</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in trend %}
+                <tr>
+                    <td>{{ t.week }}</td>
+                    <td>{{ t.total_bookings }}</td>
+                    <td>{{ t.raw_prospect }}</td>
+                    <td>{{ t.good_prospect }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+var bookingsTrendOptions = {
+    series: [
+        { name: 'Total Bookings', data: [{% for t in trend %}{{ t.total_bookings }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+        { name: 'Raw Prospect', data: [{% for t in trend %}{{ t.raw_prospect }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+        { name: 'Good Prospect', data: [{% for t in trend %}{{ t.good_prospect }}{% if not loop.last %}, {% endif %}{% endfor %}] }
+    ],
+    chart: { type: 'line', height: 500, toolbar: { show: false } },
+    stroke: { curve: 'smooth', width: [3, 2, 2], dashArray: [0, 5, 5] },
+    colors: ['#8b5cf6', '#f97316', '#10b981'],
+    markers: { size: [8, 6, 6] },
+    xaxis: {
+        categories: [{% for t in trend %}'{{ t.week }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45 }
+    },
+    yaxis: { title: { text: 'Number of Bookings' } },
+    legend: { position: 'top' },
+    dataLabels: {
+        enabled: true,
+        enabledOnSeries: [0]
+    }
+};
+new ApexCharts(document.getElementById('bookings-trend-chart'), bookingsTrendOptions).render();
+</script>
+
+<!-- Inbound_Direct Bookings Trend Section -->
+{% if inbound_trend and inbound_trend|length > 0 %}
+<h3 class="section-title">Inbound_Direct Weekly Bookings Trend</h3>
+
+<!-- Inbound Summary Metrics -->
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-label">Total Inbound Bookings</div>
+        <div class="metric-value">{{ inbound_trend|map(attribute='total_bookings')|sum }}</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-label">Average Weekly Inbound</div>
+        <div class="metric-value">{{ (inbound_trend|map(attribute='total_bookings')|sum / inbound_trend|length)|round(1) }}</div>
+    </div>
+</div>
+
+<!-- Inbound Bookings Trend Chart -->
+<div class="chart-container">
+    <div id="inbound-bookings-chart"></div>
+</div>
+
+<!-- Inbound Data Table -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Inbound_Direct Detailed Data</h3>
+
+<div class="card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Week</th>
+                    <th>Inbound_Direct Bookings</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in inbound_trend %}
+                <tr>
+                    <td>{{ t.week }}</td>
+                    <td>{{ t.total_bookings }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+var inboundTrendOptions = {
+    series: [
+        { name: 'Inbound_Direct Bookings', data: [{% for t in inbound_trend %}{{ t.total_bookings }}{% if not loop.last %}, {% endif %}{% endfor %}] }
+    ],
+    chart: { type: 'line', height: 400, toolbar: { show: false } },
+    stroke: { curve: 'smooth', width: 3 },
+    colors: ['#ec4899'],
+    markers: { size: 8 },
+    xaxis: {
+        categories: [{% for t in inbound_trend %}'{{ t.week }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45 }
+    },
+    yaxis: { title: { text: 'Number of Bookings' } },
+    legend: { position: 'top' },
+    dataLabels: {
+        enabled: true
+    }
+};
+new ApexCharts(document.getElementById('inbound-bookings-chart'), inboundTrendOptions).render();
+</script>
+{% endif %}
+
+<!-- Calculation Logic Section -->
+<div class="logic-section">
+    <button class="logic-toggle" onclick="toggleLogic(this)">
+        <span class="toggle-icon">&#9660;</span>
+        <span>How are these metrics calculated?</span>
+    </button>
+    <div class="logic-content" style="display:none;">
+        <div class="data-source">
+            <strong>Data Source:</strong> weekly_attendance_status-Grid view.csv (booking/attendance data)
+        </div>
+
+        <h4>Outbound Bookings (Main Chart)</h4>
+        <p>Weekly booking counts excluding Inbound_Direct source.</p>
+        <ul>
+            <li>Excludes <code>Inbound_Direct</code> source</li>
+            <li>Data grouped by week (Monday start)</li>
+        </ul>
+
+        <h4>Total Bookings</h4>
+        <div class="formula">Total Bookings = COUNT(all rows within the week)</div>
+
+        <h4>Raw Prospect Bookings</h4>
+        <p>Bookings where the prospect type is "Raw Prospect" or "Raw Prop".</p>
+        <div class="formula">Raw Prospect = COUNT(rows where Prop_Type = 'Raw Prospect' OR 'Raw Prop')</div>
+
+        <h4>Good Prospect Bookings</h4>
+        <p>Bookings where the prospect type is "Good Prospect" or "Good Prop".</p>
+        <div class="formula">Good Prospect = COUNT(rows where Prop_Type = 'Good Prospect' OR 'Good Prop')</div>
+
+        <h4>Inbound_Direct Bookings (Separate Section)</h4>
+        <p>Weekly booking counts for only Inbound_Direct source (self-scheduled calls).</p>
+        <div class="formula">Inbound Bookings = COUNT(rows where Source = 'Inbound_Direct')</div>
+
+        <h4>Summary Metrics</h4>
+        <div class="formula">Total Bookings = SUM(all weekly bookings)</div>
+        <div class="formula">Average Weekly Bookings = Total Bookings / Number of Weeks</div>
+    </div>
+</div>
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">&#128202;</div>
+    <h3>No Data Available</h3>
+    <p>No bookings data available for the selected date range.</p>
+</div>
+{% endif %}

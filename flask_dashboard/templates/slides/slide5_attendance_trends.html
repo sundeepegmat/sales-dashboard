@@ -1,0 +1,369 @@
+<!-- Slide 5: Attendance Rate Trends -->
+<h2 class="page-title">Slide 5: Attendance Rate Trends</h2>
+
+<div class="alert-banner" style="background: #dbeafe; border-color: #3b82f6; color: #1e40af;">
+    <span>&#128197;</span> Analysis Period: {{ start_date }} to {{ end_date }}
+</div>
+
+{% if trend and trend|length > 0 %}
+<h3 class="section-title">Showing {{ trend|length }} weeks of attendance data</h3>
+
+<!-- Summary Metrics -->
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-label">Average Overall Attendance</div>
+        <div class="metric-value">{{ (trend|map(attribute='overall_rate')|sum / trend|length)|round(1) }}%</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Average Raw Prospect</div>
+        <div class="metric-value">{{ (trend|map(attribute='raw_rate')|sum / trend|length)|round(1) }}%</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Average Good Prospect</div>
+        <div class="metric-value">{{ (trend|map(attribute='good_rate')|sum / trend|length)|round(1) }}%</div>
+    </div>
+</div>
+
+<!-- Weekly Attendance Rate Trends by Cohort Chart -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Weekly Attendance Rate Trends by Cohort</h3>
+
+<div class="chart-container">
+    <div id="attendance-trend-chart"></div>
+</div>
+
+<!-- Data Table -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Detailed Attendance Data</h3>
+
+<div class="card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Week</th>
+                    <th>Overall_Attendance_Rate</th>
+                    <th>Raw_Prospect_Attendance_Rate</th>
+                    <th>Good_Prospect_Attendance_Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in trend %}
+                <tr>
+                    <td>{{ t.week }}</td>
+                    <td>{{ t.overall_rate }}%</td>
+                    <td>{{ t.raw_rate }}%</td>
+                    <td>{{ t.good_rate }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+var attendanceTrendOptions = {
+    series: [
+        { name: 'Overall Attendance', data: [{% for t in trend %}{{ t.overall_rate }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+        { name: 'Raw Prospect', data: [{% for t in trend %}{{ t.raw_rate }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+        { name: 'Good Prospect', data: [{% for t in trend %}{{ t.good_rate }}{% if not loop.last %}, {% endif %}{% endfor %}] }
+    ],
+    chart: { type: 'line', height: 500, toolbar: { show: false } },
+    stroke: { curve: 'smooth', width: [3, 2, 2], dashArray: [0, 5, 5] },
+    colors: ['#6366f1', '#f97316', '#10b981'],
+    markers: { size: [8, 6, 6] },
+    xaxis: {
+        categories: [{% for t in trend %}'{{ t.week }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45 }
+    },
+    yaxis: {
+        max: 100,
+        title: { text: 'Attendance Rate (%)' },
+        labels: { formatter: function(val) { return val + '%'; } }
+    },
+    legend: { position: 'top' },
+    dataLabels: {
+        enabled: true,
+        enabledOnSeries: [0],
+        formatter: function(val) { return val + '%'; }
+    }
+};
+new ApexCharts(document.getElementById('attendance-trend-chart'), attendanceTrendOptions).render();
+</script>
+
+<!-- Response Rate Trend Section -->
+{% if response_trend and response_trend|length > 0 %}
+<h3 class="section-title">Response Rate Trend (Call Done OR In Touch OR Confirmed Attendance)</h3>
+
+<!-- Response Rate Summary Metrics -->
+<div class="metrics-grid">
+    <div class="metric-card highlight">
+        <div class="metric-label">Average Response Rate</div>
+        <div class="metric-value">{{ (response_trend|map(attribute='response_rate')|sum / response_trend|length)|round(1) }}%</div>
+    </div>
+</div>
+
+<!-- Response Rate Trend Chart -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Weekly Response Rate Trend</h3>
+
+<div class="chart-container">
+    <div id="response-trend-chart"></div>
+</div>
+
+<!-- Response Rate Data Table -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Detailed Response Rate Data</h3>
+
+<div class="card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Week</th>
+                    <th>Total Bookings</th>
+                    <th>Responded</th>
+                    <th>Response Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in response_trend %}
+                <tr>
+                    <td>{{ r.week }}</td>
+                    <td>{{ r.total }}</td>
+                    <td>{{ r.responded }}</td>
+                    <td>{{ r.response_rate }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+var responseTrendOptions = {
+    series: [
+        { name: 'Response Rate', data: [{% for r in response_trend %}{{ r.response_rate }}{% if not loop.last %}, {% endif %}{% endfor %}] }
+    ],
+    chart: { type: 'line', height: 400, toolbar: { show: false } },
+    stroke: { curve: 'smooth', width: 3 },
+    colors: ['#8b5cf6'],
+    markers: { size: 8 },
+    xaxis: {
+        categories: [{% for r in response_trend %}'{{ r.week }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45 }
+    },
+    yaxis: {
+        max: 100,
+        title: { text: 'Response Rate (%)' },
+        labels: { formatter: function(val) { return val + '%'; } }
+    },
+    legend: { position: 'top' },
+    dataLabels: {
+        enabled: true,
+        formatter: function(val) { return val + '%'; }
+    }
+};
+new ApexCharts(document.getElementById('response-trend-chart'), responseTrendOptions).render();
+</script>
+{% endif %}
+
+<!-- Overall Bookings Trend Section (Outbound + Inbound Combined) -->
+{% if overall_trend and overall_trend|length > 0 %}
+<h3 class="section-title">Overall Bookings Trend (Outbound + Inbound Combined)</h3>
+
+<!-- Overall Summary Metrics -->
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-label">Total Bookings</div>
+        <div class="metric-value">{{ overall_trend|map(attribute='total_bookings')|sum }}</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-label">Total Calls Done</div>
+        <div class="metric-value">{{ overall_trend|map(attribute='calls_done')|sum }}</div>
+    </div>
+    <div class="metric-card highlight">
+        <div class="metric-label">Average Attendance Rate</div>
+        <div class="metric-value">{{ (overall_trend|map(attribute='attendance_rate')|sum / overall_trend|length)|round(1) }}%</div>
+    </div>
+</div>
+
+<!-- Overall Bookings Trend Chart -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Weekly Overall Bookings, Calls Done & Attendance Rate</h3>
+
+<div class="chart-container">
+    <div id="overall-bookings-trend-chart"></div>
+</div>
+
+<!-- Overall Bookings Data Table -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Detailed Overall Bookings Data</h3>
+
+<div class="card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Week</th>
+                    <th>Total Bookings</th>
+                    <th>Calls Done</th>
+                    <th>Attendance Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for o in overall_trend %}
+                <tr>
+                    <td>{{ o.week }}</td>
+                    <td>{{ o.total_bookings }}</td>
+                    <td>{{ o.calls_done }}</td>
+                    <td>{{ o.attendance_rate }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+var overallBookingsTrendOptions = {
+    series: [
+        {
+            name: 'Total Bookings',
+            type: 'column',
+            data: [{% for o in overall_trend %}{{ o.total_bookings }}{% if not loop.last %}, {% endif %}{% endfor %}]
+        },
+        {
+            name: 'Calls Done',
+            type: 'line',
+            data: [{% for o in overall_trend %}{{ o.calls_done }}{% if not loop.last %}, {% endif %}{% endfor %}]
+        },
+        {
+            name: 'Attendance Rate (%)',
+            type: 'line',
+            data: [{% for o in overall_trend %}{{ o.attendance_rate }}{% if not loop.last %}, {% endif %}{% endfor %}]
+        }
+    ],
+    chart: {
+        type: 'line',
+        height: 500,
+        toolbar: { show: false },
+        stacked: false
+    },
+    stroke: {
+        width: [0, 3, 3],
+        curve: 'smooth',
+        dashArray: [0, 0, 5]
+    },
+    colors: ['#6366f1', '#10b981', '#f97316'],
+    markers: {
+        size: [0, 6, 6]
+    },
+    plotOptions: {
+        bar: {
+            columnWidth: '50%',
+            borderRadius: 4
+        }
+    },
+    xaxis: {
+        categories: [{% for o in overall_trend %}'{{ o.week }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45 }
+    },
+    yaxis: [
+        {
+            title: { text: 'Count (Bookings / Calls Done)' },
+            labels: {
+                formatter: function(val) { return Math.round(val); }
+            }
+        },
+        {
+            opposite: true,
+            title: { text: 'Attendance Rate (%)' },
+            max: 100,
+            labels: {
+                formatter: function(val) { return val + '%'; }
+            }
+        }
+    ],
+    legend: { position: 'top' },
+    dataLabels: {
+        enabled: true,
+        enabledOnSeries: [2],
+        formatter: function(val, opts) {
+            if (opts.seriesIndex === 2) {
+                return val + '%';
+            }
+            return val;
+        }
+    },
+    tooltip: {
+        shared: true,
+        intersect: false,
+        y: {
+            formatter: function(val, opts) {
+                if (opts.seriesIndex === 2) {
+                    return val + '%';
+                }
+                return val;
+            }
+        }
+    }
+};
+new ApexCharts(document.getElementById('overall-bookings-trend-chart'), overallBookingsTrendOptions).render();
+</script>
+{% endif %}
+
+<!-- Calculation Logic Section -->
+<div class="logic-section">
+    <button class="logic-toggle" onclick="toggleLogic(this)">
+        <span class="toggle-icon">&#9660;</span>
+        <span>How are these metrics calculated?</span>
+    </button>
+    <div class="logic-content" style="display:none;">
+        <div class="data-source">
+            <strong>Data Source:</strong> weekly_attendance_status-Grid view.csv (booking/attendance data)
+        </div>
+
+        <h4>Data Filters Applied</h4>
+        <ul>
+            <li>Excludes <code>Inbound_Direct</code> source (outbound calls only)</li>
+            <li>Excludes calls marked as <code>Can't Happen</code></li>
+            <li>Excludes <code>Not Done</code> calls from Africa region</li>
+            <li>Data grouped by week (Monday start)</li>
+        </ul>
+
+        <h4>Overall Attendance Rate</h4>
+        <p>Weekly percentage of all bookings that were completed.</p>
+        <div class="formula">Overall Rate = (COUNT(Call_Status = 'Done') / Total Bookings) × 100</div>
+
+        <h4>Raw Prospect Attendance Rate</h4>
+        <p>Attendance rate for "Raw Prospect" cohort only.</p>
+        <div class="formula">Raw Rate = (Raw Prospect Done / Raw Prospect Total) × 100</div>
+
+        <h4>Good Prospect Attendance Rate</h4>
+        <p>Attendance rate for "Good Prospect" cohort only.</p>
+        <div class="formula">Good Rate = (Good Prospect Done / Good Prospect Total) × 100</div>
+
+        <h4>Response Rate</h4>
+        <p>Percentage of bookings that received any response (attended, in touch, or confirmed).</p>
+        <ul>
+            <li><code>Call_Status = 'Done'</code> OR</li>
+            <li><code>Whatsapp_Status = 'In Touch'</code> OR</li>
+            <li><code>Whatsapp_Status = 'Confirmed Attendance'</code></li>
+        </ul>
+        <div class="formula">Response Rate = (Responded Count / Total Bookings) × 100</div>
+
+        <h4>Overall Bookings Trend (Combined)</h4>
+        <p>Weekly trend combining both Outbound and Inbound bookings, showing three metrics:</p>
+        <ul>
+            <li><strong>Total Bookings:</strong> All bookings (outbound + inbound) excluding Can't Happen and Not Done + Africa</li>
+            <li><strong>Calls Done:</strong> Number of bookings where <code>Call_Status = 'Done'</code></li>
+            <li><strong>Attendance Rate:</strong> Percentage of bookings that were completed</li>
+        </ul>
+        <div class="formula">Attendance Rate = (Calls Done / Total Bookings) × 100</div>
+    </div>
+</div>
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">&#128202;</div>
+    <h3>No Data Available</h3>
+    <p>No attendance data available for the selected date range.</p>
+</div>
+{% endif %}

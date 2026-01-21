@@ -1,0 +1,462 @@
+<!-- Slide 2.2: Response Rate Tracker -->
+<div class="page-header">
+    <h1 class="page-title">Response Rate Tracker</h1>
+    <p class="page-subtitle">Track response rates and model accuracy (excluding Inbound Direct)</p>
+    <div class="date-badge">
+        <span>{{ start_display }} - {{ end_display }}</span>
+    </div>
+</div>
+
+<!-- Tabs Container -->
+<div class="tabs-container">
+    <div class="tabs-header">
+        <button class="tab-btn active" onclick="switchTab('overview')">Response Overview</button>
+        <button class="tab-btn" onclick="switchTab('daily')">Daily Response</button>
+        <button class="tab-btn" onclick="switchTab('agent')">Agent Data</button>
+        <button class="tab-btn" onclick="switchTab('model')">Model Accuracy</button>
+        <button class="tab-btn" onclick="switchTab('blank')">Blank Response</button>
+    </div>
+
+    <!-- Tab 1: Response Overview -->
+    <div id="tab-overview" class="tab-content active">
+        {% if metrics %}
+        <div class="metrics-grid">
+            <div class="metric-card highlight">
+                <div class="metric-icon">&#128197;</div>
+                <div class="metric-label">Calls Booked</div>
+                <div class="metric-value">{{ metrics.calls_booked }}</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon green">&#9989;</div>
+                <div class="metric-label">Responses (Yes)</div>
+                <div class="metric-value">{{ metrics.responses_yes }}</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon blue">&#128200;</div>
+                <div class="metric-label">Response Rate</div>
+                <div class="metric-value">{{ metrics.response_rate }}%</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon gray">&#128220;</div>
+                <div class="metric-label">Blanks</div>
+                <div class="metric-value">{{ metrics.responses_blank }}</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon green">&#128222;</div>
+                <div class="metric-label">Calls Done</div>
+                <div class="metric-value">{{ metrics.calls_done }}</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon orange">&#127919;</div>
+                <div class="metric-label">Attendance Rate</div>
+                <div class="metric-value">{{ metrics.attendance_rate }}%</div>
+            </div>
+        </div>
+
+        <div class="two-col">
+            <div class="chart-container">
+                <div class="chart-header">Response Distribution</div>
+                <div id="response-donut"></div>
+            </div>
+            <div class="chart-container">
+                <div class="chart-header">Response vs Attendance</div>
+                <div id="response-radial"></div>
+            </div>
+        </div>
+
+        <script>
+        // Response Donut Chart
+        var donutOptions = {
+            series: [{{ metrics.responses_yes }}, {{ metrics.responses_no }}, {{ metrics.responses_blank }}],
+            chart: { type: 'donut', height: 300 },
+            labels: ['Yes', 'No', 'Blank'],
+            colors: ['#10b981', '#ef4444', '#94a3b8'],
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '65%',
+                        labels: {
+                            show: true,
+                            total: {
+                                show: true,
+                                label: 'Total',
+                                formatter: function() { return {{ metrics.calls_booked }}; }
+                            }
+                        }
+                    }
+                }
+            },
+            legend: { position: 'bottom' }
+        };
+        new ApexCharts(document.getElementById('response-donut'), donutOptions).render();
+
+        // Response vs Attendance Radial
+        var radialOptions = {
+            series: [{{ metrics.response_rate }}, {{ metrics.attendance_rate }}],
+            chart: { type: 'radialBar', height: 300 },
+            plotOptions: {
+                radialBar: {
+                    dataLabels: {
+                        name: { fontSize: '14px' },
+                        value: { fontSize: '20px', formatter: function(val) { return val + '%'; } }
+                    }
+                }
+            },
+            labels: ['Response Rate', 'Attendance Rate'],
+            colors: ['#6366f1', '#10b981']
+        };
+        new ApexCharts(document.getElementById('response-radial'), radialOptions).render();
+        </script>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">&#128202;</div>
+            <h3>No Data Available</h3>
+            <p>No records found for the selected date range.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Tab 2: Daily Response -->
+    <div id="tab-daily" class="tab-content">
+        {% if daily and daily|length > 0 %}
+        <div class="card">
+            <div class="card-header">
+                <span>&#128197;</span> Daily Response Metrics
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Calls Booked</th>
+                            <th>Responded</th>
+                            <th>Response Rate</th>
+                            <th>Calls Done</th>
+                            <th>Attendance Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in daily %}
+                        <tr>
+                            <td><strong>{{ d.date }}</strong></td>
+                            <td>{{ d.calls_booked }}</td>
+                            <td>{{ d.responded }}</td>
+                            <td>{{ d.response_rate }}%</td>
+                            <td>{{ d.calls_done }}</td>
+                            <td>{{ d.attendance_rate }}%</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">Daily Response Trend</div>
+            <div id="daily-line-chart"></div>
+        </div>
+
+        <script>
+        var dailyLineOptions = {
+            series: [
+                {
+                    name: 'Response Rate',
+                    data: [{% for d in daily %}{{ d.response_rate }}{% if not loop.last %}, {% endif %}{% endfor %}]
+                },
+                {
+                    name: 'Attendance Rate',
+                    data: [{% for d in daily %}{{ d.attendance_rate }}{% if not loop.last %}, {% endif %}{% endfor %}]
+                }
+            ],
+            chart: { type: 'line', height: 350, toolbar: { show: false } },
+            stroke: { curve: 'smooth', width: 3 },
+            colors: ['#6366f1', '#10b981'],
+            xaxis: {
+                categories: [{% for d in daily %}'{{ d.date }}'{% if not loop.last %}, {% endif %}{% endfor %}]
+            },
+            yaxis: { max: 100, labels: { formatter: function(val) { return val + '%'; } } },
+            legend: { position: 'top' },
+            markers: { size: 5 }
+        };
+        new ApexCharts(document.getElementById('daily-line-chart'), dailyLineOptions).render();
+        </script>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">&#128197;</div>
+            <h3>No Daily Data</h3>
+            <p>No daily response data found for the selected date range.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Tab 3: Agent Data -->
+    <div id="tab-agent" class="tab-content">
+        {% if agents and agents|length > 0 %}
+        <p style="margin-bottom: 16px; color: #64748b;">Click an agent to view their detailed metrics</p>
+        <div class="agent-grid">
+            {% for a in agents %}
+            <button class="agent-btn" data-agent="{{ a.agent }}" onclick="selectAgent('{{ a.agent }}')">{{ a.agent }}</button>
+            {% endfor %}
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span>&#128202;</span> Agent Response Summary
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Agent</th>
+                            <th>Calls Booked</th>
+                            <th>Yes</th>
+                            <th>No</th>
+                            <th>Blank</th>
+                            <th>Response Rate</th>
+                            <th>Attendance Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in agents %}
+                        <tr id="agent-row-{{ a.agent|replace(' ', '-') }}">
+                            <td><strong>{{ a.agent }}</strong></td>
+                            <td>{{ a.calls_booked }}</td>
+                            <td>{{ a.responses_yes }}</td>
+                            <td>{{ a.responses_no }}</td>
+                            <td>{{ a.responses_blank }}</td>
+                            <td>{{ a.response_rate }}%</td>
+                            <td>{{ a.attendance_rate }}%</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="agent-detail" style="display: none;">
+            <div class="chart-container">
+                <div class="chart-header"><span id="agent-name-display">Agent</span> Response Breakdown</div>
+                <div id="agent-response-chart"></div>
+            </div>
+        </div>
+
+        <script>
+        var agentData = {
+            {% for a in agents %}
+            '{{ a.agent }}': {
+                calls_booked: {{ a.calls_booked }},
+                yes: {{ a.responses_yes }},
+                no: {{ a.responses_no }},
+                blank: {{ a.responses_blank }},
+                response_rate: {{ a.response_rate }},
+                attendance_rate: {{ a.attendance_rate }}
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        };
+
+        var agentChart = null;
+
+        function renderAgentData(agent) {
+            var data = agentData[agent];
+            document.getElementById('agent-name-display').textContent = agent;
+
+            if (agentChart) {
+                agentChart.destroy();
+            }
+
+            var chartOptions = {
+                series: [data.yes, data.no, data.blank],
+                chart: { type: 'donut', height: 300 },
+                labels: ['Yes', 'No', 'Blank'],
+                colors: ['#10b981', '#ef4444', '#94a3b8'],
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '65%',
+                            labels: {
+                                show: true,
+                                total: {
+                                    show: true,
+                                    label: 'Total',
+                                    formatter: function() { return data.calls_booked; }
+                                }
+                            }
+                        }
+                    }
+                },
+                legend: { position: 'bottom' }
+            };
+
+            agentChart = new ApexCharts(document.getElementById('agent-response-chart'), chartOptions);
+            agentChart.render();
+        }
+        </script>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">&#128101;</div>
+            <h3>No Agent Data</h3>
+            <p>No agent response data found for the selected date range.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Tab 4: Model Accuracy -->
+    <div id="tab-model" class="tab-content">
+        {% if model %}
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon blue">&#128202;</div>
+                <div class="metric-label">Total Records</div>
+                <div class="metric-value">{{ model.total }}</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon green">&#9989;</div>
+                <div class="metric-label">With Probability</div>
+                <div class="metric-value">{{ model.prob_exists }}</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon gray">&#128220;</div>
+                <div class="metric-label">Without Probability</div>
+                <div class="metric-value">{{ model.prob_blank }}</div>
+            </div>
+        </div>
+
+        {% if model.breakdown and model.breakdown|length > 0 %}
+        <div class="card">
+            <div class="card-header">
+                <span>&#127919;</span> Model vs Actual Response Rate by Profile
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Profile Category</th>
+                            <th>Count</th>
+                            <th>Model Probability</th>
+                            <th>Actual Response Rate</th>
+                            <th>Difference</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in model.breakdown %}
+                        <tr>
+                            <td><strong>{{ b.profile }}</strong></td>
+                            <td>{{ b.count }}</td>
+                            <td>{{ b.model_prob }}%</td>
+                            <td>{{ b.actual_rate }}%</td>
+                            <td>
+                                {% if b.difference >= 0 %}
+                                <span style="color: #10b981;">+{{ b.difference }}%</span>
+                                {% else %}
+                                <span style="color: #ef4444;">{{ b.difference }}%</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">Model Probability vs Actual Response Rate</div>
+            <div id="model-accuracy-chart"></div>
+        </div>
+
+        <script>
+        var modelChartOptions = {
+            series: [
+                {
+                    name: 'Model Probability',
+                    data: [{% for b in model.breakdown %}{{ b.model_prob }}{% if not loop.last %}, {% endif %}{% endfor %}]
+                },
+                {
+                    name: 'Actual Rate',
+                    data: [{% for b in model.breakdown %}{{ b.actual_rate }}{% if not loop.last %}, {% endif %}{% endfor %}]
+                }
+            ],
+            chart: { type: 'bar', height: 350 },
+            plotOptions: {
+                bar: { horizontal: false, columnWidth: '55%', borderRadius: 6 }
+            },
+            colors: ['#6366f1', '#10b981'],
+            dataLabels: {
+                enabled: true,
+                formatter: function(val) { return val + '%'; },
+                style: { fontSize: '11px' }
+            },
+            xaxis: {
+                categories: [{% for b in model.breakdown %}'{{ b.profile[:20] }}...'{% if not loop.last %}, {% endif %}{% endfor %}],
+                labels: { rotate: -45, style: { fontSize: '10px' } }
+            },
+            yaxis: { max: 100, labels: { formatter: function(val) { return val + '%'; } } },
+            legend: { position: 'top' }
+        };
+        new ApexCharts(document.getElementById('model-accuracy-chart'), modelChartOptions).render();
+        </script>
+        {% else %}
+        <div class="alert-banner">
+            <span>&#9888;&#65039;</span>
+            No profile breakdown data available.
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">&#127919;</div>
+            <h3>No Model Data</h3>
+            <p>No model accuracy data found for the selected date range.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Tab 5: Blank Response -->
+    <div id="tab-blank" class="tab-content">
+        {% if blank and blank|length > 0 %}
+        <div class="alert-banner">
+            <span>&#9888;&#65039;</span>
+            Showing {{ blank|length }} records with Call Status = "Not Done" and blank WhatsApp response
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span>&#128220;</span> Blank Response Records
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Sales Agent</th>
+                            <th>Event Date</th>
+                            <th>Phone Number</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in blank %}
+                        <tr>
+                            <td>{{ r.email }}</td>
+                            <td>{{ r.agent }}</td>
+                            <td>{{ r.date }}</td>
+                            <td>{{ r.phone }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">&#127881;</div>
+            <h3>No Blank Responses</h3>
+            <p>Great! No records with blank WhatsApp response found.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>

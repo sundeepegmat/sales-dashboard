@@ -1,0 +1,219 @@
+<!-- Slide 7: Phone Call Sales Performance -->
+<h2 class="page-title">Slide 7: Phone Call Sales Performance</h2>
+
+<div class="alert-banner" style="background: #dbeafe; border-color: #3b82f6; color: #1e40af;">
+    <span>&#128222;</span> Analysis Period: {{ start_date }} to {{ end_date }} (Phone Calls Only)
+</div>
+
+{% if agents and agents|length > 0 %}
+<!-- Agent Phone Call Performance Table -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Agent Phone Call Performance Table</h3>
+
+<div class="card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Agent</th>
+                    <th>Phone_Calls_Done</th>
+                    <th>Phone_Call_Purchases</th>
+                    <th>High_Rating_Percent</th>
+                    <th>Purchase_Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in agents %}
+                <tr>
+                    <td>{{ a.agent }}</td>
+                    <td>{{ a.phone_calls_done }}</td>
+                    <td>{{ a.phone_call_purchases }}</td>
+                    <td>{{ a.high_rating }}%</td>
+                    <td>{{ a.purchase_rate }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="two-col" style="margin-top: 24px;">
+    <div class="chart-container">
+        <h3 style="font-size: 1rem; color: #1e293b; margin-bottom: 16px;">High Rating Percent by Agent</h3>
+        <div id="phone-high-rating-chart"></div>
+    </div>
+
+    <div class="chart-container">
+        <h3 style="font-size: 1rem; color: #1e293b; margin-bottom: 16px;">Phone Call Purchase Rate by Agent</h3>
+        <div id="phone-purchase-rate-chart"></div>
+    </div>
+</div>
+
+<!-- Summary Metrics -->
+<div class="metrics-grid" style="margin-top: 24px;">
+    <div class="metric-card">
+        <div class="metric-label">Total Phone Calls</div>
+        <div class="metric-value">{{ agents|map(attribute='phone_calls_done')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Total Phone Purchases</div>
+        <div class="metric-value">{{ agents|map(attribute='phone_call_purchases')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Average Phone Purchase Rate</div>
+        <div class="metric-value">{{ (agents|map(attribute='purchase_rate')|sum / agents|length)|round(1) }}%</div>
+    </div>
+</div>
+
+<!-- Performance Insights -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Phone Call Performance Insights</h3>
+
+<div class="card">
+    {% set high_performers = [] %}
+    {% set low_performers = [] %}
+    {% for a in agents %}
+        {% if a.purchase_rate >= 50 %}
+            {% set _ = high_performers.append(a) %}
+        {% else %}
+            {% set _ = low_performers.append(a) %}
+        {% endif %}
+    {% endfor %}
+
+    {% if high_performers|length > 0 %}
+    <div class="alert-banner" style="background: #dcfce7; border-color: #22c55e; color: #166534; margin-bottom: 16px;">
+        <span>&#127881;</span> {{ high_performers|length }} agents are meeting/exceeding the 50% phone call purchase rate target:
+    </div>
+    <ul style="margin-bottom: 16px; padding-left: 20px;">
+        {% for a in agents %}
+        {% if a.purchase_rate >= 50 %}
+        <li><strong>{{ a.agent }}</strong>: {{ a.purchase_rate }}% ({{ a.phone_call_purchases }}/{{ a.phone_calls_done }})</li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+    {% else %}
+    <div class="alert-banner" style="background: #fef3c7; border-color: #f59e0b; color: #92400e; margin-bottom: 16px;">
+        <span>&#9888;</span> No agents are currently meeting the 50% phone call purchase rate target.
+    </div>
+    {% endif %}
+
+    {% set low_count = 0 %}
+    {% for a in agents %}{% if a.purchase_rate < 50 %}{% set low_count = low_count + 1 %}{% endif %}{% endfor %}
+    {% if low_count > 0 %}
+    <div class="alert-banner" style="background: #dbeafe; border-color: #3b82f6; color: #1e40af;">
+        <span>&#128200;</span> {{ low_count }} agents need improvement in phone call conversion:
+    </div>
+    <ul style="margin-top: 16px; padding-left: 20px;">
+        {% for a in agents %}
+        {% if a.purchase_rate < 50 %}
+        <li><strong>{{ a.agent }}</strong>: {{ a.purchase_rate }}% ({{ a.phone_call_purchases }}/{{ a.phone_calls_done }})</li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+
+<script>
+// High Rating Chart
+var phoneHighRatingOptions = {
+    series: [{
+        name: 'High Rating %',
+        data: [{% for a in agents %}{{ a.high_rating }}{% if not loop.last %}, {% endif %}{% endfor %}]
+    }],
+    chart: { type: 'bar', height: 400 },
+    plotOptions: { bar: { borderRadius: 4, columnWidth: '60%' } },
+    colors: ['#f97316'],
+    xaxis: {
+        categories: [{% for a in agents %}'{{ a.agent }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45, style: { fontSize: '11px' } }
+    },
+    yaxis: { labels: { formatter: function(val) { return val + '%'; } } },
+    annotations: {
+        yaxis: [{
+            y: 55,
+            borderColor: '#f97316',
+            strokeDashArray: 4,
+            label: { text: 'Target: 55%', style: { color: '#f97316', background: '#fff7ed' } }
+        }]
+    },
+    dataLabels: {
+        enabled: true,
+        formatter: function(val) { return val + '%'; },
+        style: { fontSize: '10px' }
+    }
+};
+new ApexCharts(document.getElementById('phone-high-rating-chart'), phoneHighRatingOptions).render();
+
+// Purchase Rate Chart
+var phonePurchaseRateOptions = {
+    series: [{
+        name: 'Purchase Rate',
+        data: [{% for a in agents %}{{ a.purchase_rate }}{% if not loop.last %}, {% endif %}{% endfor %}]
+    }],
+    chart: { type: 'bar', height: 400 },
+    plotOptions: { bar: { borderRadius: 4, columnWidth: '60%' } },
+    colors: ['#10b981'],
+    xaxis: {
+        categories: [{% for a in agents %}'{{ a.agent }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45, style: { fontSize: '11px' } }
+    },
+    yaxis: { labels: { formatter: function(val) { return val + '%'; } } },
+    annotations: {
+        yaxis: [{
+            y: 60,
+            borderColor: '#10b981',
+            strokeDashArray: 4,
+            label: { text: 'Target: 60%', style: { color: '#10b981', background: '#ecfdf5' } }
+        }]
+    },
+    dataLabels: {
+        enabled: true,
+        formatter: function(val) { return val + '%'; },
+        style: { fontSize: '10px' }
+    }
+};
+new ApexCharts(document.getElementById('phone-purchase-rate-chart'), phonePurchaseRateOptions).render();
+</script>
+
+<!-- Calculation Logic Section -->
+<div class="logic-section">
+    <button class="logic-toggle" onclick="toggleLogic(this)">
+        <span class="toggle-icon">&#9660;</span>
+        <span>How are these metrics calculated?</span>
+    </button>
+    <div class="logic-content" style="display:none;">
+        <div class="data-source">
+            <strong>Data Source:</strong> Sales_Call_Tracker-Grid view.csv (sales call data)
+        </div>
+
+        <h4>Phone Calls Filter</h4>
+        <p>This slide only includes calls where <code>Call_Type = 'Phone Call'</code> (excludes Zoom/video calls).</p>
+
+        <h4>Phone Calls Done</h4>
+        <p>Number of phone calls completed by each agent.</p>
+        <div class="formula">Phone Calls Done = COUNT(rows where Call_Type = 'Phone Call')</div>
+
+        <h4>Phone Call Purchases</h4>
+        <p>Number of phone calls that resulted in a purchase.</p>
+        <div class="formula">Purchases = COUNT(Phone Calls where Purchase_Status = 'Purchased')</div>
+
+        <h4>High Rating Percent</h4>
+        <p>Percentage of phone calls rated as high purchase intent.</p>
+        <div class="formula">High Rating % = (COUNT(Purchase_Intent = 'High') / Phone Calls Done) × 100</div>
+        <p><strong>Target:</strong> 55%</p>
+
+        <h4>Purchase Rate</h4>
+        <p>Phone call conversion rate.</p>
+        <div class="formula">Purchase Rate = (Phone Call Purchases / Phone Calls Done) × 100</div>
+        <p><strong>Target:</strong> 60%</p>
+    </div>
+</div>
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">&#128222;</div>
+    <h3>No Data Available</h3>
+    <p>No phone call data available for the selected date range.</p>
+</div>
+{% endif %}

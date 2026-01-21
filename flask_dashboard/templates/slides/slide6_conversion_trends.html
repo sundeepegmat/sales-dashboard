@@ -1,0 +1,129 @@
+<!-- Slide 6: Conversion Rate Trends -->
+<h2 class="page-title">Slide 6: Conversion Rate Trends</h2>
+
+<div class="alert-banner" style="background: #dbeafe; border-color: #3b82f6; color: #1e40af;">
+    <span>&#128197;</span> Analysis Period: {{ start_date }} to {{ end_date }}
+</div>
+
+{% if trend and trend|length > 0 %}
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Showing {{ trend|length }} weeks of conversion data</h3>
+
+<!-- Summary Metrics -->
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-label">Total Calls</div>
+        <div class="metric-value">{{ trend|map(attribute='calls_done')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Total Purchases</div>
+        <div class="metric-value">{{ trend|map(attribute='purchases')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Average Conversion</div>
+        <div class="metric-value">{{ (trend|map(attribute='purchase_rate')|sum / trend|length)|round(1) }}%</div>
+    </div>
+</div>
+
+<!-- Weekly Calls Done vs Purchase Rate Trends Chart -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Weekly Calls Done vs Purchase Rate Trends</h3>
+
+<div class="chart-container">
+    <div id="conversion-trend-chart"></div>
+</div>
+
+<!-- Data Table -->
+<h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; color: #1e293b;">Detailed Conversion Data</h3>
+
+<div class="card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Year_Week</th>
+                    <th>Calls_Done</th>
+                    <th>Purchases</th>
+                    <th>Purchase_Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in trend %}
+                <tr>
+                    <td>{{ t.week }}</td>
+                    <td>{{ t.calls_done }}</td>
+                    <td>{{ t.purchases }}</td>
+                    <td>{{ t.purchase_rate }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+var conversionTrendOptions = {
+    series: [
+        { name: 'Calls Done', type: 'line', data: [{% for t in trend %}{{ t.calls_done }}{% if not loop.last %}, {% endif %}{% endfor %}] },
+        { name: 'Purchase Rate (%)', type: 'line', data: [{% for t in trend %}{{ t.purchase_rate }}{% if not loop.last %}, {% endif %}{% endfor %}] }
+    ],
+    chart: { height: 500, type: 'line', toolbar: { show: false } },
+    stroke: { curve: 'smooth', width: 3 },
+    colors: ['#6366f1', '#f97316'],
+    markers: { size: 8 },
+    xaxis: {
+        categories: [{% for t in trend %}'{{ t.week }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45 }
+    },
+    yaxis: [
+        { title: { text: 'Calls Done' } },
+        { opposite: true, title: { text: 'Purchase Rate (%)' }, labels: { formatter: function(val) { return val + '%'; } } }
+    ],
+    legend: { position: 'top' },
+    dataLabels: {
+        enabled: true,
+        formatter: function(val, { seriesIndex }) {
+            return seriesIndex === 1 ? val + '%' : val;
+        }
+    }
+};
+new ApexCharts(document.getElementById('conversion-trend-chart'), conversionTrendOptions).render();
+</script>
+
+<!-- Calculation Logic Section -->
+<div class="logic-section">
+    <button class="logic-toggle" onclick="toggleLogic(this)">
+        <span class="toggle-icon">&#9660;</span>
+        <span>How are these metrics calculated?</span>
+    </button>
+    <div class="logic-content" style="display:none;">
+        <div class="data-source">
+            <strong>Data Source:</strong> Sales_Call_Tracker-Grid view.csv (sales call data)
+        </div>
+
+        <h4>Calls Done</h4>
+        <p>Total number of sales calls completed each week.</p>
+        <div class="formula">Calls Done = COUNT(rows where Call_Done_Date within week)</div>
+
+        <h4>Purchases</h4>
+        <p>Number of calls that resulted in a purchase each week.</p>
+        <div class="formula">Purchases = COUNT(rows where Purchase_Status = 'Purchased')</div>
+
+        <h4>Purchase Rate (Conversion Rate)</h4>
+        <p>Weekly conversion rate - percentage of calls resulting in purchase.</p>
+        <div class="formula">Purchase Rate = (Purchases / Calls Done) × 100</div>
+
+        <h4>Summary Metrics</h4>
+        <div class="formula">Total Calls = SUM(weekly Calls Done)</div>
+        <div class="formula">Total Purchases = SUM(weekly Purchases)</div>
+        <div class="formula">Average Conversion = AVG(weekly Purchase Rates)</div>
+    </div>
+</div>
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">&#128202;</div>
+    <h3>No Data Available</h3>
+    <p>No conversion data available for the selected date range.</p>
+</div>
+{% endif %}

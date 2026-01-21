@@ -1,0 +1,184 @@
+<!-- Slide 2: Agent Attendance -->
+<div class="page-header">
+    <h1 class="page-title">Agent Attendance</h1>
+    <p class="page-subtitle">Individual agent performance and attendance tracking</p>
+    <div class="date-badge">
+        <span>{{ start_display }} - {{ end_display }}</span>
+    </div>
+</div>
+
+{% if agents and agents|length > 0 %}
+<!-- Summary Metrics -->
+<div class="metrics-grid">
+    <div class="metric-card highlight">
+        <div class="metric-icon">&#128101;</div>
+        <div class="metric-label">Total Agents</div>
+        <div class="metric-value">{{ agents|length }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-icon blue">&#128197;</div>
+        <div class="metric-label">Total Bookings</div>
+        <div class="metric-value">{{ agents|map(attribute='bookings')|sum }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-icon green">&#128200;</div>
+        <div class="metric-label">Avg Attendance Rate</div>
+        <div class="metric-value">{{ (agents|map(attribute='attendance_rate')|sum / agents|length)|round|int }}%</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-icon orange">&#11088;</div>
+        <div class="metric-label">Avg Good Prospect Rate</div>
+        <div class="metric-value">{{ (agents|map(attribute='good_prospect_rate')|sum / agents|length)|round|int }}%</div>
+    </div>
+</div>
+
+<!-- Agent Table -->
+<div class="card">
+    <div class="card-header">
+        <span>&#128202;</span> Agent Performance Table
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Agent Name</th>
+                    <th>Bookings</th>
+                    <th>Attendance Rate</th>
+                    <th>Good Prospect Rate</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for agent in agents %}
+                <tr>
+                    <td><strong>{{ agent.agent }}</strong></td>
+                    <td>{{ agent.bookings }}</td>
+                    <td>{{ agent.attendance_rate }}%</td>
+                    <td>{{ agent.good_prospect_rate }}%</td>
+                    <td>
+                        {% if agent.attendance_rate >= 60 %}
+                        <span class="badge badge-success">Good</span>
+                        {% elif agent.attendance_rate >= 40 %}
+                        <span class="badge badge-warning">Average</span>
+                        {% else %}
+                        <span class="badge badge-danger">Low</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="two-col">
+    <div class="chart-container">
+        <div class="chart-header">Attendance Rate by Agent</div>
+        <div id="attendance-bar-chart"></div>
+    </div>
+
+    <div class="chart-container">
+        <div class="chart-header">Good Prospect Rate by Agent</div>
+        <div id="good-prospect-chart"></div>
+    </div>
+</div>
+
+<script>
+// Attendance Bar Chart
+var attendanceBarOptions = {
+    series: [{
+        name: 'Attendance Rate',
+        data: [{% for a in agents %}{{ a.attendance_rate }}{% if not loop.last %}, {% endif %}{% endfor %}]
+    }],
+    chart: {
+        type: 'bar',
+        height: 350
+    },
+    plotOptions: {
+        bar: {
+            borderRadius: 6,
+            horizontal: false,
+            columnWidth: '60%'
+        }
+    },
+    colors: ['#6366f1'],
+    dataLabels: {
+        enabled: true,
+        formatter: function(val) { return val + '%'; },
+        style: { fontSize: '11px' }
+    },
+    xaxis: {
+        categories: [{% for a in agents %}'{{ a.agent }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: {
+            rotate: -45,
+            style: { fontSize: '11px' }
+        }
+    },
+    yaxis: {
+        max: 100,
+        labels: { formatter: function(val) { return val + '%'; } }
+    },
+    annotations: {
+        yaxis: [{
+            y: 60,
+            borderColor: '#10b981',
+            strokeDashArray: 4,
+            label: {
+                text: 'Target 60%',
+                style: { color: '#10b981', background: '#ecfdf5' }
+            }
+        }]
+    }
+};
+var attendanceBarChart = new ApexCharts(document.getElementById('attendance-bar-chart'), attendanceBarOptions);
+attendanceBarChart.render();
+
+// Good Prospect Chart
+var goodProspectOptions = {
+    series: [{
+        name: 'Good Prospect Rate',
+        data: [{% for a in agents %}{{ a.good_prospect_rate }}{% if not loop.last %}, {% endif %}{% endfor %}]
+    }],
+    chart: {
+        type: 'bar',
+        height: 350
+    },
+    plotOptions: {
+        bar: {
+            borderRadius: 6,
+            horizontal: false,
+            columnWidth: '60%'
+        }
+    },
+    colors: ['#f97316'],
+    dataLabels: {
+        enabled: true,
+        formatter: function(val) { return val + '%'; },
+        style: { fontSize: '11px' }
+    },
+    xaxis: {
+        categories: [{% for a in agents %}'{{ a.agent }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: {
+            rotate: -45,
+            style: { fontSize: '11px' }
+        }
+    },
+    yaxis: {
+        max: 100,
+        labels: { formatter: function(val) { return val + '%'; } }
+    }
+};
+var goodProspectChart = new ApexCharts(document.getElementById('good-prospect-chart'), goodProspectOptions);
+goodProspectChart.render();
+</script>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">&#128101;</div>
+    <h3>No Data Available</h3>
+    <p>No agent attendance records found for the selected date range.</p>
+</div>
+{% endif %}

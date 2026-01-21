@@ -1,0 +1,128 @@
+<!-- Slide 1: Overview -->
+<div class="page-header">
+    <h1 class="page-title">Overview Dashboard</h1>
+    <p class="page-subtitle">Key performance metrics at a glance</p>
+    <div class="date-badge">
+        <span>{{ start_display }} - {{ end_display }}</span>
+    </div>
+</div>
+
+{% if metrics %}
+<div class="metrics-grid">
+    <div class="metric-card highlight">
+        <div class="metric-icon">&#128222;</div>
+        <div class="metric-label">Calls Done</div>
+        <div class="metric-value">{{ metrics.calls_done }}</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-icon blue">&#128200;</div>
+        <div class="metric-label">High Call Rating</div>
+        <div class="metric-value">{{ metrics.high_call_rating }}%</div>
+        <div class="metric-target {{ 'success' if metrics.high_call_rating >= 50 else 'danger' }}">
+            Target: 50%
+        </div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-icon green">&#128101;</div>
+        <div class="metric-label">Attendance Rate</div>
+        <div class="metric-value">{{ metrics.attendance_rate }}%</div>
+        <div class="metric-target {{ 'success' if metrics.attendance_rate >= 60 else 'danger' }}">
+            Target: 60%
+        </div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-icon orange">&#128176;</div>
+        <div class="metric-label">Purchase Rate</div>
+        <div class="metric-value">{{ metrics.purchase_rate }}%</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-icon green">&#127942;</div>
+        <div class="metric-label">Total Purchases</div>
+        <div class="metric-value">{{ metrics.purchases }}</div>
+    </div>
+</div>
+
+<!-- Overview Charts -->
+<div class="two-col">
+    <div class="chart-container">
+        <div class="chart-header">Performance Summary</div>
+        <div id="overview-chart"></div>
+    </div>
+
+    <div class="chart-container">
+        <div class="chart-header">Funnel Metrics</div>
+        <div id="funnel-chart"></div>
+    </div>
+</div>
+
+<script>
+// Performance Chart
+var performanceOptions = {
+    series: [{{ metrics.high_call_rating }}, {{ metrics.attendance_rate }}, {{ metrics.purchase_rate }}],
+    chart: {
+        type: 'radialBar',
+        height: 300
+    },
+    plotOptions: {
+        radialBar: {
+            dataLabels: {
+                name: { fontSize: '14px' },
+                value: { fontSize: '20px', formatter: function(val) { return val + '%'; } },
+                total: {
+                    show: true,
+                    label: 'Avg',
+                    formatter: function() {
+                        return Math.round(({{ metrics.high_call_rating }} + {{ metrics.attendance_rate }} + {{ metrics.purchase_rate }}) / 3) + '%';
+                    }
+                }
+            }
+        }
+    },
+    labels: ['High Rating', 'Attendance', 'Purchase'],
+    colors: ['#6366f1', '#10b981', '#f97316']
+};
+var performanceChart = new ApexCharts(document.getElementById('overview-chart'), performanceOptions);
+performanceChart.render();
+
+// Funnel Chart
+var funnelOptions = {
+    series: [{
+        name: 'Count',
+        data: [{{ metrics.calls_done }}, Math.round({{ metrics.calls_done }} * {{ metrics.attendance_rate }} / 100), {{ metrics.purchases }}]
+    }],
+    chart: {
+        type: 'bar',
+        height: 300
+    },
+    plotOptions: {
+        bar: {
+            borderRadius: 6,
+            horizontal: true,
+            barHeight: '60%',
+            distributed: true
+        }
+    },
+    colors: ['#6366f1', '#10b981', '#f97316'],
+    dataLabels: {
+        enabled: true,
+        style: { fontSize: '14px', fontWeight: '600' }
+    },
+    xaxis: {
+        categories: ['Calls Done', 'Attended', 'Purchased']
+    },
+    legend: { show: false }
+};
+var funnelChart = new ApexCharts(document.getElementById('funnel-chart'), funnelOptions);
+funnelChart.render();
+</script>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">&#128202;</div>
+    <h3>No Data Available</h3>
+    <p>No records found for the selected date range.</p>
+</div>
+{% endif %}

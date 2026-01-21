@@ -1,0 +1,193 @@
+<!-- Slide 1: Sales Performance Overview -->
+<h2 class="page-title">Slide 1: Sales Performance Overview</h2>
+
+<div class="alert-banner" style="background: #dbeafe; border-color: #3b82f6; color: #1e40af;">
+    <span>&#128197;</span> Analysis Period: {{ start_date }} to {{ end_date }}
+</div>
+
+{% if metrics %}
+<!-- Sales Performance Metrics -->
+<h3 class="section-title">Sales Performance Metrics</h3>
+
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-label">Calls Done</div>
+        <div class="metric-value">{{ metrics.calls_done }}</div>
+        <div class="metric-target {{ 'success' if metrics.calls_done >= 65 else 'danger' }}">
+            Target: 65 {% if metrics.calls_done >= 65 %}&#9989;{% else %}&#10060;{% endif %}
+        </div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">High Call Rating</div>
+        <div class="metric-value">{{ metrics.high_call_rating }}%</div>
+        <div class="metric-target {{ 'success' if metrics.high_call_rating >= 50 else 'danger' }}">
+            Target: 50% {% if metrics.high_call_rating >= 50 %}&#9989;{% else %}&#10060;{% endif %}
+        </div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Purchase Rate</div>
+        <div class="metric-value">{{ metrics.purchase_rate }}%</div>
+        <div class="metric-target {{ 'success' if metrics.purchase_rate >= 65 else 'danger' }}">
+            Target: 65% {% if metrics.purchase_rate >= 65 %}&#9989;{% else %}&#10060;{% endif %}
+        </div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Purchases</div>
+        <div class="metric-value">{{ metrics.purchases }}</div>
+        <div class="metric-target {{ 'success' if metrics.purchases >= 42 else 'danger' }}">
+            Target: 42 {% if metrics.purchases >= 42 %}&#9989;{% else %}&#10060;{% endif %}
+        </div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Outbound Attendance Rate</div>
+        <div class="metric-value">{{ metrics.outbound_attendance_rate }}%</div>
+        <div class="metric-target {{ 'success' if metrics.outbound_attendance_rate >= 55 else 'danger' }}">
+            Target: 55% {% if metrics.outbound_attendance_rate >= 55 %}&#9989;{% else %}&#10060;{% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Performance Summary Table -->
+<h3 class="section-title">Performance Summary Table</h3>
+
+<div class="card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Target</th>
+                    <th>Actual</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Calls Done</td>
+                    <td>55</td>
+                    <td>{{ metrics.calls_done }}</td>
+                    <td>
+                        {% if metrics.calls_done >= 55 %}
+                        <span class="badge badge-success">&#9989; Target Met</span>
+                        {% else %}
+                        <span class="badge badge-danger">&#10060; Below Target</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>High Call Rating</td>
+                    <td>50%</td>
+                    <td>{{ metrics.high_call_rating }}%</td>
+                    <td>
+                        {% if metrics.high_call_rating >= 50 %}
+                        <span class="badge badge-success">&#9989; Target Met</span>
+                        {% else %}
+                        <span class="badge badge-danger">&#10060; Below Target</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Purchase Rate</td>
+                    <td>60%</td>
+                    <td>{{ metrics.purchase_rate }}%</td>
+                    <td>
+                        {% if metrics.purchase_rate >= 60 %}
+                        <span class="badge badge-success">&#9989; Target Met</span>
+                        {% else %}
+                        <span class="badge badge-danger">&#10060; Below Target</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Purchases</td>
+                    <td>33</td>
+                    <td>{{ metrics.purchases }}</td>
+                    <td>
+                        {% if metrics.purchases >= 33 %}
+                        <span class="badge badge-success">&#9989; Target Met</span>
+                        {% else %}
+                        <span class="badge badge-danger">&#10060; Below Target</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Outbound Attendance Rate</td>
+                    <td>70%</td>
+                    <td>{{ metrics.outbound_attendance_rate }}%</td>
+                    <td>
+                        {% if metrics.outbound_attendance_rate >= 70 %}
+                        <span class="badge badge-success">&#9989; Target Met</span>
+                        {% else %}
+                        <span class="badge badge-danger">&#10060; Below Target</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Presentation Comments -->
+<h3 class="section-title">Presentation Comments</h3>
+
+<div class="card" style="padding: 20px;">
+    {% if comments %}
+    <pre style="white-space: pre-wrap; font-family: inherit; margin: 0;">{{ comments }}</pre>
+    {% else %}
+    <p style="color: #64748b;">No comments available in comments.txt</p>
+    {% endif %}
+</div>
+
+<!-- Calculation Logic Section -->
+<div class="logic-section">
+    <button class="logic-toggle" onclick="toggleLogic(this)">
+        <span class="toggle-icon">&#9660;</span>
+        <span>How are these metrics calculated?</span>
+    </button>
+    <div class="logic-content" style="display:none;">
+        <div class="data-source">
+            <strong>Data Sources:</strong> Sales_Call_Tracker-Grid view.csv (sales data), weekly_attendance_status-Grid view.csv (attendance data)
+        </div>
+
+        <h4>Calls Done</h4>
+        <p>Total number of sales calls completed within the selected date range.</p>
+        <div class="formula">Calls Done = COUNT(all rows in Sales data where Call_Done_Date is within date range)</div>
+
+        <h4>High Call Rating</h4>
+        <p>Percentage of calls where the prospect showed high purchase intent.</p>
+        <div class="formula">High Call Rating = (COUNT(calls with Purchase_Intent = 'High') / Total Calls Done) × 100</div>
+        <p><strong>Target:</strong> 50%</p>
+
+        <h4>Purchase Rate</h4>
+        <p>Percentage of calls that resulted in a purchase.</p>
+        <div class="formula">Purchase Rate = (COUNT(calls with Purchase_Status = 'Purchased') / Total Calls Done) × 100</div>
+        <p><strong>Target:</strong> 60%</p>
+
+        <h4>Purchases</h4>
+        <p>Total number of successful purchases from sales calls.</p>
+        <div class="formula">Purchases = COUNT(calls where Purchase_Status = 'Purchased')</div>
+        <p><strong>Target:</strong> 33 purchases</p>
+
+        <h4>Outbound Attendance Rate</h4>
+        <p>Percentage of booked outbound calls that were actually attended (completed).</p>
+        <ul>
+            <li>Excludes <code>Inbound_Direct</code> source (only outbound calls)</li>
+            <li>Excludes calls marked as <code>Can't Happen</code></li>
+            <li>Excludes <code>Not Done</code> calls from Africa region</li>
+        </ul>
+        <div class="formula">Outbound Attendance Rate = (COUNT(calls with Call_Status = 'Done') / Total Eligible Bookings) × 100</div>
+        <p><strong>Target:</strong> 70%</p>
+    </div>
+</div>
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">&#128202;</div>
+    <h3>No Data Available</h3>
+    <p>No data found for the selected date range.</p>
+</div>
+{% endif %}

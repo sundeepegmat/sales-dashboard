@@ -1,0 +1,192 @@
+<!-- Slide 2: Agent Attendance Analysis -->
+<h2 class="page-title">Slide 2: Agent Attendance Analysis</h2>
+
+<div class="alert-banner" style="background: #dbeafe; border-color: #3b82f6; color: #1e40af;">
+    <span>&#128197;</span> Analysis Period: {{ start_date }} to {{ end_date }}
+</div>
+
+{% if agents and agents|length > 0 %}
+<!-- Agent Attendance Performance Table -->
+<h3 class="section-title">Agent Attendance Performance</h3>
+
+<div class="card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Agent</th>
+                    <th>Bookings</th>
+                    <th>Attendance_Rate</th>
+                    <th>Good_Prospect_Attendance_Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in agents %}
+                <tr>
+                    <td>{{ a.agent }}</td>
+                    <td>{{ a.bookings }}</td>
+                    <td>{{ a.attendance_rate }}%</td>
+                    <td>{{ a.good_prospect_rate }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Attendance Rate Visualization -->
+<h3 class="section-title">Attendance Rate Visualization</h3>
+
+<div class="two-col">
+    <div class="chart-container">
+        <div class="chart-header">Agent Attendance Rates</div>
+        <div id="attendance-rate-chart"></div>
+    </div>
+
+    <div class="chart-container">
+        <div class="chart-header">Good Prospect Attendance Rates</div>
+        <div id="good-prospect-rate-chart"></div>
+    </div>
+</div>
+
+<!-- Team Summary Metrics -->
+<div class="metrics-grid" style="margin-top: 24px;">
+    <div class="metric-card">
+        <div class="metric-label">Team Attendance Rate</div>
+        <div class="metric-value">{{ team_rate }}%</div>
+        <div class="metric-target" style="color: #64748b; font-size: 0.75rem;">
+            Total Done ({{ total_done }}) / Total Bookings ({{ total_bookings }})
+        </div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-label">Team Good Prospect Rate</div>
+        <div class="metric-value">{{ team_good_rate }}%</div>
+        <div class="metric-target" style="color: #64748b; font-size: 0.75rem;">
+            Good Prospect Done ({{ good_done }}) / Good Prospect Total ({{ good_total }})
+        </div>
+    </div>
+</div>
+
+<!-- Calculation Logic Section -->
+<details style="margin-top: 48px; border-top: 2px solid #e2e8f0; padding-top: 24px;">
+    <summary style="cursor: pointer; padding: 16px 20px; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.95rem; font-weight: 600; color: #475569; list-style: none;">
+        ▶ How are these metrics calculated?
+    </summary>
+    <div style="margin-top: 16px; padding: 24px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.875rem; line-height: 1.8;">
+        <div style="background: #ecfdf5; border: 1px solid #6ee7b7; border-radius: 6px; padding: 12px 16px; margin: 12px 0; color: #065f46;">
+            <strong>Data Source:</strong> weekly_attendance_status-Grid view.csv (attendance/booking data)
+        </div>
+
+        <h4 style="color: #1e293b; font-size: 1rem; font-weight: 600; margin: 20px 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #f1f5f9;">Data Filters Applied</h4>
+        <ul style="margin: 8px 0 16px 20px; color: #64748b;">
+            <li>Excludes <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #6366f1;">Inbound_Direct</code> source (outbound calls only)</li>
+            <li>Excludes calls marked as <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #6366f1;">Can't Happen</code></li>
+            <li>Excludes <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #6366f1;">Not Done</code> calls from Africa region</li>
+        </ul>
+
+        <h4 style="color: #1e293b; font-size: 1rem; font-weight: 600; margin: 20px 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #f1f5f9;">Bookings</h4>
+        <p style="color: #64748b; margin-bottom: 8px;">Total number of call bookings assigned to each agent within the date range.</p>
+        <div style="background: #fefce8; border: 1px solid #fde047; border-radius: 6px; padding: 12px 16px; margin: 12px 0; font-family: Consolas, Monaco, monospace; font-size: 0.85rem; color: #854d0e;">Bookings = COUNT(rows where Sales_Agent_Name = agent AND EventDate within range)</div>
+
+        <h4 style="color: #1e293b; font-size: 1rem; font-weight: 600; margin: 20px 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #f1f5f9;">Attendance Rate</h4>
+        <p style="color: #64748b; margin-bottom: 8px;">Percentage of bookings that resulted in completed calls for each agent.</p>
+        <div style="background: #fefce8; border: 1px solid #fde047; border-radius: 6px; padding: 12px 16px; margin: 12px 0; font-family: Consolas, Monaco, monospace; font-size: 0.85rem; color: #854d0e;">Attendance Rate = (COUNT(Call_Status = 'Done') / Total Bookings) × 100</div>
+        <p style="color: #64748b;"><strong>Target:</strong> 70%</p>
+
+        <h4 style="color: #1e293b; font-size: 1rem; font-weight: 600; margin: 20px 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #f1f5f9;">Good Prospect Attendance Rate</h4>
+        <p style="color: #64748b; margin-bottom: 8px;">Attendance rate specifically for "Good Prospect" cohort calls.</p>
+        <ul style="margin: 8px 0 16px 20px; color: #64748b;">
+            <li>Filters to only <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #6366f1;">Prop_Type</code> = 'Good Prop' or 'Good Prospect'</li>
+            <li>Measures how well agents attend high-value prospect calls</li>
+        </ul>
+        <div style="background: #fefce8; border: 1px solid #fde047; border-radius: 6px; padding: 12px 16px; margin: 12px 0; font-family: Consolas, Monaco, monospace; font-size: 0.85rem; color: #854d0e;">Good Prospect Rate = (Good Prospect Done / Total Good Prospect Bookings) × 100</div>
+        <p style="color: #64748b;"><strong>Target:</strong> 80%</p>
+
+        <h4 style="color: #1e293b; font-size: 1rem; font-weight: 600; margin: 20px 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #f1f5f9;">Team Metrics</h4>
+        <p style="color: #64748b; margin-bottom: 8px;">Aggregate metrics across all agents.</p>
+        <div style="background: #fefce8; border: 1px solid #fde047; border-radius: 6px; padding: 12px 16px; margin: 12px 0; font-family: Consolas, Monaco, monospace; font-size: 0.85rem; color: #854d0e;">Team Attendance Rate = (Total Calls Done by All Agents / Total Bookings) × 100</div>
+        <div style="background: #fefce8; border: 1px solid #fde047; border-radius: 6px; padding: 12px 16px; margin: 12px 0; font-family: Consolas, Monaco, monospace; font-size: 0.85rem; color: #854d0e;">Team Good Prospect Rate = (Total Good Prospect Done / Total Good Prospect Bookings) × 100</div>
+    </div>
+</details>
+
+<script>
+// Agent Attendance Rate Chart
+var attendanceRateOptions = {
+    series: [{
+        name: 'Attendance Rate',
+        data: [{% for a in agents %}{{ a.attendance_rate }}{% if not loop.last %}, {% endif %}{% endfor %}]
+    }],
+    chart: { type: 'bar', height: 400 },
+    plotOptions: {
+        bar: { borderRadius: 4, columnWidth: '60%' }
+    },
+    colors: ['#6366f1'],
+    xaxis: {
+        categories: [{% for a in agents %}'{{ a.agent }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45, style: { fontSize: '11px' } }
+    },
+    yaxis: {
+        max: 100,
+        title: { text: 'Attendance Rate (%)' },
+        labels: { formatter: function(val) { return val + '%'; } }
+    },
+    annotations: {
+        yaxis: [{
+            y: 70,
+            borderColor: '#ef4444',
+            strokeDashArray: 4,
+            label: { text: 'Target: 70%', style: { color: '#ef4444', background: '#fef2f2' } }
+        }]
+    },
+    dataLabels: {
+        enabled: true,
+        formatter: function(val) { return val + '%'; },
+        style: { fontSize: '10px' }
+    }
+};
+new ApexCharts(document.getElementById('attendance-rate-chart'), attendanceRateOptions).render();
+
+// Good Prospect Attendance Rate Chart
+var goodProspectOptions = {
+    series: [{
+        name: 'Good Prospect Attendance Rate',
+        data: [{% for a in agents %}{{ a.good_prospect_rate }}{% if not loop.last %}, {% endif %}{% endfor %}]
+    }],
+    chart: { type: 'bar', height: 400 },
+    plotOptions: {
+        bar: { borderRadius: 4, columnWidth: '60%' }
+    },
+    colors: ['#10b981'],
+    xaxis: {
+        categories: [{% for a in agents %}'{{ a.agent }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+        labels: { rotate: -45, style: { fontSize: '11px' } }
+    },
+    yaxis: {
+        max: 100,
+        title: { text: 'Good Prospect Attendance Rate (%)' },
+        labels: { formatter: function(val) { return val + '%'; } }
+    },
+    annotations: {
+        yaxis: [{
+            y: 80,
+            borderColor: '#ef4444',
+            strokeDashArray: 4,
+            label: { text: 'Target: 80%', style: { color: '#ef4444', background: '#fef2f2' } }
+        }]
+    },
+    dataLabels: {
+        enabled: true,
+        formatter: function(val) { return val + '%'; },
+        style: { fontSize: '10px' }
+    }
+};
+new ApexCharts(document.getElementById('good-prospect-rate-chart'), goodProspectOptions).render();
+</script>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">&#128101;</div>
+    <h3>No Data Available</h3>
+    <p>No attendance data available for the selected date range.</p>
+</div>
+{% endif %}
