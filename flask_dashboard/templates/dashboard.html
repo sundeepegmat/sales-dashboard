@@ -917,9 +917,12 @@
     </main>
 
     <script>
+        // Base URL for navigation
+        const baseUrl = '{{ url_for("dashboard", slide="__SLIDE__") }}'.replace('__SLIDE__', '');
+
         // Slide navigation
         function navigateToSlide(slideId) {
-            window.location.href = '/dashboard/' + slideId;
+            window.location.href = baseUrl + slideId;
         }
 
         // Tab switching
