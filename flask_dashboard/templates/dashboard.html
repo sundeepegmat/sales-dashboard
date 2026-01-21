@@ -790,10 +790,10 @@
         <!-- Daily Trends Section -->
         <nav class="nav-section">
             <div class="nav-section-title">Daily Trends (Independent Filters)</div>
-            <a href="/daily-trends/1" class="nav-item">
+            <a href="{{ url_for('daily_trends', page='1') }}" class="nav-item">
                 📞 Calls & Purchases
             </a>
-            <a href="/daily-trends/2" class="nav-item">
+            <a href="{{ url_for('daily_trends', page='2') }}" class="nav-item">
                 📅 Attendance & Bookings
             </a>
         </nav>
@@ -965,7 +965,7 @@
             const statusEl = document.getElementById('export-status');
             statusEl.innerHTML = '<span style="color: #6366f1;">Exporting...</span>';
 
-            fetch('/export-snapshot')
+            fetch('{{ url_for("export_snapshot") }}')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {

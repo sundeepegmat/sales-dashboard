@@ -350,14 +350,14 @@
             Sales Dashboard
         </div>
 
-        <a href="/dashboard/1" class="back-link">← Back to Main Dashboard</a>
+        <a href="{{ url_for('dashboard', slide='1') }}" class="back-link">← Back to Main Dashboard</a>
 
         <nav class="nav-section">
             <div class="nav-section-title">Daily Trends</div>
-            <a href="/daily-trends/1" class="nav-item {{ 'active' if page == '1' else '' }}">
+            <a href="{{ url_for('daily_trends', page='1') }}" class="nav-item {{ 'active' if page == '1' else '' }}">
                 📞 Calls & Purchases
             </a>
-            <a href="/daily-trends/2" class="nav-item {{ 'active' if page == '2' else '' }}">
+            <a href="{{ url_for('daily_trends', page='2') }}" class="nav-item {{ 'active' if page == '2' else '' }}">
                 📅 Attendance & Bookings
             </a>
         </nav>
@@ -390,7 +390,7 @@
                 📅 Date Filter
                 <span class="filter-badge">Independent Filter - Not linked to main dashboard</span>
             </div>
-            <form class="filter-form" method="POST" action="/save-daily-filters">
+            <form class="filter-form" method="POST" action="{{ url_for('save_daily_filters') }}">
                 <input type="hidden" name="page" value="2">
                 <div class="filter-group">
                     <label>Start Date</label>
@@ -596,7 +596,7 @@
             const statusEl = document.getElementById('export-status');
             statusEl.innerHTML = '<span style="color: #6366f1;">Exporting...</span>';
 
-            fetch('/export-snapshot')
+            fetch('{{ url_for("export_snapshot") }}')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
