@@ -8,9 +8,14 @@ import requests
 
 app = Flask(__name__)
 app.secret_key = 'sales_dashboard_secret_key'
+app.config['APPLICATION_ROOT'] = '/sales/weeklymetrics'
+
+# Support for running behind a proxy with URL prefix
+from werkzeug.middleware.proxy_fix import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 # Base paths
-BASE_PATH = r"C:\Users\sunde\OneDrive\egmat files\2_Pulse Meeting Data\Pulse excels\streamlit-dashboard"
+BASE_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_PATH = os.path.join(BASE_PATH, "data")
 KEYS_PATH = os.path.join(BASE_PATH, "keys")
 CONFIG_PATH = os.path.join(BASE_PATH, "config")
